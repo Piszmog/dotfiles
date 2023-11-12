@@ -36,12 +36,6 @@ vim.keymap.set('n', '<leader>cf', '<cmd>lua vim.lsp.buf.format()<CR>', { desc = 
 -- LSP
 vim.keymap.set('n', '<leader>ch', '<cmd>lua vim.lsp.buf.hover()<CR>', { desc = "Hover" })
 
--- Tmux
-vim.keymap.set('n', '<C-h>', '<cmd>TmuxNatigateLeft<CR>', { desc = "Tmux navigate left" })
-vim.keymap.set('n', '<C-j>', '<cmd>TmuxNatigateDown<CR>', { desc = "Tmux navigate down" })
-vim.keymap.set('n', '<C-k>', '<cmd>TmuxNatigateUp<CR>', { desc = "Tmux navigate up" })
-vim.keymap.set('n', '<C-l>', '<cmd>TmuxNatigateRight<CR>', { desc = "Tmux navigate right" })
-
 -- Trouble
 vim.keymap.set("n", "<leader>xx", function() require("trouble").toggle() end, { desc = "Trouble" })
 vim.keymap.set("n", "<leader>xw", function() require("trouble").toggle("workspace_diagnostics") end,
