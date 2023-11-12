@@ -1,3 +1,4 @@
+# From https://github.com/z11i/github-copilot-cli.fish
 function __fish_add_history
     set -l cmd (string replace -- \n \\n (string join ' ' $argv) | string replace \\ \\\\)
     if test -z $cmd
