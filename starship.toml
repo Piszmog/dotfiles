@@ -1,0 +1,139 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$hg_branch\
+$package\
+$c\
+$cmake\
+$cobol\
+$daml\
+$dart\
+$deno\
+$dotnet\
+$elixir\
+$elm\
+$erlang\
+$golang\
+$haskell\
+$helm\
+$java\
+$julia\
+$kotlin\
+$lua\
+$nim\
+$nodejs\
+$ocaml\
+$perl\
+$php\
+$pulumi\
+$purescript\
+$python\
+$raku\
+$rlang\
+$red\
+$ruby\
+$rust\
+$scala\
+$swift\
+$terraform\
+$vlang\
+$vagrant\
+$zig\
+$buf\
+$nix_shell\
+$conda\
+$meson\
+$spack\
+$memory_usage\
+$openstack\
+$azure\
+$env_var\
+$crystal\
+$custom\
+$sudo\
+$cmd_duration\
+$line_break\
+$jobs\
+$battery\
+$time\
+$status\
+$container\
+$shell\
+$character"""
+
+command_timeout = 5000
+
+[directory]
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[character]
+success_symbol = "[ ❯](bold green) "
+error_symbol = "[ ❯](bold red) "
+
+[c]
+symbol = " "
+format = '[ $symbol ($version) ]($style)'
+
+[elixir]
+symbol = " "
+format = '[ $symbol $version ]($style)'
+
+[elm]
+symbol = " "
+format = '[ $symbol $version ]($style)'
+
+[git_branch]
+symbol = ""
+format = '[ $symbol $branch ]($style)'
+
+[git_status]
+format = '[$all_status$ahead_behind ]($style)'
+
+[golang]
+symbol = " "
+format = '[ $symbol $version ]($style)'
+
+[haskell]
+symbol = " "
+format = '[ $symbol $version ]($style)'
+
+[java]
+symbol = " "
+format = '[ $symbol $version ]($style)'
+
+[julia]
+symbol = " "
+format = '[ $symbol $version ]($style)'
+
+[lua]
+symbol = ""
+format = '[ $symbol $version ]($style)'
+
+[nodejs]
+symbol = ""
+format = '[ $symbol $version ]($style)'
+
+[nim]
+symbol = " "
+format = '[ $symbol $version ]($style)'
+
+[python]
+symbol = " "
+format = '[ $symbol $version ]($style)'
+python_binary = 'python3.11'
+
+[rust]
+symbol = ""
+format = '[ $symbol $version ]($style)'
+
+[zig]
+symbol = '⚡️ '
+format = '[ $symbol $version ]($style)'
