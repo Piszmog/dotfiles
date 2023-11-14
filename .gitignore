@@ -33,6 +33,7 @@ Temporary Items
 configstore/
 gh/
 github-copilot/
+gh-copilot/
 jgit/
 simple-update-notifier/
 tmux/plugins/
