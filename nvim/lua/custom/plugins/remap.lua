@@ -46,4 +46,7 @@ vim.keymap.set("n", "<leader>xq", function() require("trouble").toggle("quickfix
 vim.keymap.set("n", "<leader>xl", function() require("trouble").toggle("loclist") end, { desc = "Trouble loclist" })
 vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end, { desc = "Trouble lsp references" })
 
+-- Rename
+vim.keymap.set('n', '<leader>rn', ':IncRename ', { desc = "Rename" })
+
 return {}
