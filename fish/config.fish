@@ -47,6 +47,5 @@ starship init fish | source
 # opam configuration
 source /Users/randell/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-set --export --prepend PATH "/Users/randell/.rd/bin"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/randell/google-cloud-sdk/path.fish.inc' ]; . '/Users/randell/google-cloud-sdk/path.fish.inc'; end
