@@ -49,4 +49,7 @@ vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references")
 -- Rename
 vim.keymap.set('n', '<leader>rn', ':IncRename ', { desc = "Rename" })
 
+-- Go
+vim.keymap.set("n", "<leader>gi", ":!goimports -w .<CR>", { desc = "Go import" })
+
 return {}
