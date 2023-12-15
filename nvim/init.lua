@@ -540,7 +540,6 @@ local servers = {
     }
   },
   svelte = {},
-  ocamllsp = {},
   jdtls = {},
 
   lua_ls = {
