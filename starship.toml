@@ -113,6 +113,10 @@ format = '[ $symbol $version ]($style)'
 symbol = " "
 format = '[ $symbol $version ]($style)'
 
+[kotlin]
+symbol = ""
+format = '[ $symbol $version ]($style)'
+
 [lua]
 symbol = ""
 format = '[ $symbol $version ]($style)'
@@ -132,6 +136,10 @@ python_binary = 'python3.11'
 
 [rust]
 symbol = ""
+format = '[ $symbol $version ]($style)'
+
+[terraform]
+symbol = " "
 format = '[ $symbol $version ]($style)'
 
 [zig]
