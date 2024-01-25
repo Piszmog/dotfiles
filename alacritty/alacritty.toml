@@ -1,0 +1,30 @@
+import = ["~/.config/alacritty/catppuccin-mocha.toml"]
+
+[env]
+TERM = "xterm-256color"
+
+[shell]
+#program: /usr/bin/tmux
+program = "/opt/homebrew/bin/tmux"
+
+[font]
+size = 14
+# family = "FiraCode Nerd Font"
+normal = { family = "MonaspiceKr NF", style = "Regular" }
+bold = { family = "MonaspiceKr NF", style = "Bold" }
+italic = { family = "MonaspiceKr NF", style = "Italic" }
+bold_italic = { family = "MonaspiceKr NF", style = "Bold Italic" }
+
+[window]
+opacity = 0.98
+padding = { x = 7, y = 5 }
+option_as_alt = "OnlyLeft"
+
+[keyboard]
+bindings = [
+  #  - { key: Right, mods: Alt, chars: "\\x1BF" }
+  #  - { key: Left, mods: Alt, chars: "\\x1BB" }
+  { key = "Right", mods = "Alt", chars = "\\ef" },
+  { key = "Left", mods = "Alt", chars = "\\eb" },
+  { key = "Y", mods = "Command", chars = "CreateNewWindow" },
+]
