@@ -45,5 +45,5 @@ opacity = 0.98
 option_as_alt = "OnlyLeft"
 
 [window.padding]
-x = 7
+x = 0
 y = 5
