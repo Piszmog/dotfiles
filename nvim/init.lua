@@ -522,6 +522,7 @@ local servers = {
         nilness = true,
         shadow = true,
       },
+      buildFlags = { "-tags=e2e" },
     },
   },
   templ = {},
