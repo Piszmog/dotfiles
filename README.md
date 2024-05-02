@@ -39,4 +39,4 @@ Download the [latest from GitHub](https://github.com/alacritty/alacritty/release
 
 ## NeoVim
 
-Follwo [guide](https://github.com/neovim/neovim).
+Follow [guide](https://github.com/neovim/neovim).
