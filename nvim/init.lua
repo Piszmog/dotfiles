@@ -384,7 +384,7 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
   ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim', 'javascript',
-    'toml', 'svelte', 'yaml', 'json', 'zig', 'fish', 'dockerfile', 'bash', 'css', 'html', 'ocaml', 'java', 'xml', 'swift', 'sql' },
+    'toml', 'svelte', 'yaml', 'json', 'zig', 'fish', 'dockerfile', 'bash', 'css', 'html', 'ocaml', 'java', 'xml', 'swift', 'sql', 'gosum', 'gomod' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
@@ -514,13 +514,41 @@ local servers = {
     gopls = {
       completeUnimported = true,
       usePlaceholders = true,
+      staticcheck = true,
+      matcher = 'Fuzzy',
+      diagnosticsDelay = '500ms',
+      symbolMatcher = 'fuzzy',
+      codelenses = {
+        generate = true,     -- show the `go generate` lens.
+        gc_details = true,   -- Show a code lens toggling the display of gc's choices.
+        test = true,
+        tidy = true,
+        vendor = true,
+        regenerate_cgo = true,
+        upgrade_dependency = true,
+      },
       analyses = {
+        unreachable = true,
+        useany = true,
+        ST1003 = true,
+        undeclaredname = true,
+        fillreturns = true,
+        nonewvars = true,
         unusedparams = true,
         unusedwrite = true,
         unusedvariable = true,
         fieldalignment = true,
         nilness = true,
         shadow = true,
+      },
+      hints = {
+        assignVariableTypes = true,
+        compositeLiteralFields = true,
+        compositeLiteralTypes = true,
+        constantValues = true,
+        functionTypeParameters = true,
+        parameterNames = true,
+        rangeVariableTypes = true,
       },
       buildFlags = { "-tags=e2e" },
     },

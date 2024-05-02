@@ -36,7 +36,8 @@ return {
       -- This is where we attach the autoformatting for reasonable clients
       callback = function(args)
         -- Something went wrong with their LSP formatting for templ files
-        if vim.bo.filetype == 'templ' then
+        -- Since using ray-x/go for formatting go, we will that instead of this
+        if vim.bo.filetype == 'templ' or vim.bo.filetype == 'go' then
           return
         end
         local client_id = args.data.client_id

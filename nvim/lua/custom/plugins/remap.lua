@@ -11,15 +11,9 @@ vim.keymap.set('n', '<leader>fs', function()
 	telescope.grep_string({ search = vim.fn.input("Grep > ") })
 end, { desc = "Find files with grep" })
 
--- Telescope File Browser
-vim.keymap.set('n', '<leader>fe', function()
-	vim.cmd('Telescope file_browser path=%:p:h select_buffer=true')
-end, { desc = "Toggle file browser" })
-
 -- Harpoon
 local mark = require('harpoon.mark')
 local ui = require('harpoon.ui')
-
 vim.keymap.set('n', '<leader>ha', mark.add_file, { desc = "Harpoon current file" })
 vim.keymap.set('n', '<C-e>', ui.toggle_quick_menu, { desc = "Harpoon toggle quick menu" })
 vim.keymap.set('n', '<leader>hc', mark.clear_all, { desc = "Harpoon clear all" })
@@ -29,12 +23,18 @@ vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle, { desc = "Toggle Undotr
 
 -- Fugitive
 vim.keymap.set('n', '<leader>gs', vim.cmd.Git, { desc = "Git status" })
+vim.keymap.set('n', '<leader>gb', function()
+	vim.cmd.Git('blame')
+end, { desc = "Git blame" })
+vim.keymap.set('n', '<leader>P', function()
+	vim.cmd.Git('push')
+end, { desc = "Git Push" })
+vim.keymap.set('n', '<leader>pp', function()
+	vim.cmd.Git('pull')
+end, { desc = "Git Pull" })
 
 -- Formatting
 vim.keymap.set('n', '<leader>cf', '<cmd>lua vim.lsp.buf.format()<CR>', { desc = "Format" })
-
--- LSP
-vim.keymap.set('n', '<leader>ch', '<cmd>lua vim.lsp.buf.hover()<CR>', { desc = "Hover" })
 
 -- Trouble
 vim.keymap.set("n", "<leader>xx", function() require("trouble").toggle() end, { desc = "Trouble" })
@@ -47,9 +47,9 @@ vim.keymap.set("n", "<leader>xl", function() require("trouble").toggle("loclist"
 vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end, { desc = "Trouble lsp references" })
 
 -- Rename
-vim.keymap.set('n', '<leader>rn', ':IncRename ', { desc = "Rename" })
+vim.keymap.set('n', '<leader>rn', '<cmd>IncRename<CR>', { desc = "Rename" })
 
 -- Go
-vim.keymap.set("n", "<leader>gi", ":!goimports -w .<CR>", { desc = "Go import" })
+vim.keymap.set('n', '<leader>ge', '<cmd>GoIfErr<CR>', { desc = "Add Go if error" })
 
 return {}
