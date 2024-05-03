@@ -47,7 +47,7 @@ vim.keymap.set("n", "<leader>xl", function() require("trouble").toggle("loclist"
 vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end, { desc = "Trouble lsp references" })
 
 -- Rename
-vim.keymap.set('n', '<leader>rn', '<cmd>IncRename<CR>', { desc = "Rename" })
+--vim.keymap.set('n', '<leader>rn', '<cmd>IncRename<CR>', { desc = "Rename" })
 
 -- Go
 vim.keymap.set('n', '<leader>ge', '<cmd>GoIfErr<CR>', { desc = "Add Go if error" })
