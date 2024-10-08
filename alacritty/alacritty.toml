@@ -38,7 +38,7 @@ key = "T"
 mods = "Command"
 
 [shell]
-program = "/opt/homebrew/bin/tmux"
+program = "/run/current-system/sw/bin/tmux"
 
 [window]
 opacity = 0.98
