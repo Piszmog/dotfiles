@@ -43,6 +43,7 @@
           pkgs.mkalias
           pkgs.neovim
           pkgs.obsidian
+          pkgs.python3
           pkgs.ripgrep
           pkgs.spotify
           pkgs.sqlc
@@ -59,10 +60,12 @@
       homebrew = {
         enable = true;
         casks = [
+          "firefox"
           "font-monaspace-nerd-font"
           "pallotron-yubiswitch"
           "scroll-reverser"
           "via"
+          "zen-browser"
         ];
         onActivation.cleanup = "zap";
         onActivation.autoUpdate = true;
@@ -93,6 +96,7 @@
         dock.autohide = true;
         dock.persistent-apps = [
           "/Applications/Firefox.app"
+          "${pkgs.alacritty}/Applications/Alacritty.app"
         ];
         finder.FXPreferredViewStyle = "clmv";
         loginwindow.GuestEnabled = false;
