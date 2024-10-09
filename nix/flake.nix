@@ -43,6 +43,7 @@
           pkgs.monaspace
           pkgs.mkalias
           pkgs.neovim
+          pkgs.nodejs_22
           pkgs.obsidian
           pkgs.python3
           pkgs.ripgrep
