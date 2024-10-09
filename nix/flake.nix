@@ -36,6 +36,7 @@
           pkgs.gh
           pkgs.go_1_23
           pkgs.go-migrate
+          pkgs.golangci-lint
           pkgs.jq
           pkgs.k6
           pkgs.lazygit
