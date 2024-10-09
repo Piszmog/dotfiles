@@ -51,6 +51,7 @@
           pkgs.sqlite
           pkgs.starship
           pkgs.tailwindcss
+          pkgs.templ
           pkgs.tmux
           pkgs.tree
           pkgs.tree-sitter
