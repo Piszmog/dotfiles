@@ -29,6 +29,8 @@
           #pkgs._1password-gui # broken right now
           pkgs.alacritty
           pkgs.discord
+          pkgs.docker
+          pkgs.docker-compose
           pkgs.fd
 	  pkgs.fish
           pkgs.gh
@@ -58,9 +60,9 @@
         enable = true;
         casks = [
           "font-monaspace-nerd-font"
-          #"pallotron-yubiswitch"
-          #"scroll-reverser"
-          #"via"
+          "pallotron-yubiswitch"
+          "scroll-reverser"
+          "via"
         ];
         onActivation.cleanup = "zap";
         onActivation.autoUpdate = true;
