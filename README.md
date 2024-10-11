@@ -17,6 +17,7 @@ My dotfiles for my setup. Most my my setup is controlled via Nix. See [flake](/n
 Additional tools I install to `~/tools`.
 
 * [lopper](https://github.com/Piszmog/lopper) - cleaning dead `git` branches
+* [gtpm](https://github.com/Piszmog/gtpm) - Go replacement for `tpm`
 
 ## Tmux
 
