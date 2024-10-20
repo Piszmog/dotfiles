@@ -63,6 +63,13 @@
 
       homebrew = {
         enable = true;
+        taps = [
+          "piszmog/tools"
+        ];
+        brews = [
+          "piszmog/tools/gtpm"
+          "piszmog/tools/lopper"
+        ];
         casks = [
           "firefox"
           "font-monaspace-nerd-font"
