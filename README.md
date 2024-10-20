@@ -6,6 +6,8 @@ My dotfiles for my setup. Most my my setup is controlled via Nix. See [flake](/n
 
 * Install [nix-darwin](https://github.com/LnL7/nix-darwin).
 * Apply flake
+  * Nix packages will be installed
+  * Homebrew forumlae and casks will be installed
 
 ## Terminal Colors
 
