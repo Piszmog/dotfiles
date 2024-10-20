@@ -11,15 +11,3 @@ My dotfiles for my setup. Most my my setup is controlled via Nix. See [flake](/n
 
 * [Snazzy - iTerm2](https://github.com/sindresorhus/iterm2-snazzy)
 * [Snazzy - Gnome](https://github.com/LukasKalbertodt/gnome-snazzy)
-
-## Tools
-
-Additional tools I install to `~/tools`.
-
-* [lopper](https://github.com/Piszmog/lopper) - cleaning dead `git` branches
-* [gtpm](https://github.com/Piszmog/gtpm) - Go replacement for `tpm`
-
-## Tmux
-
-* [tpm](https://github.com/tmux-plugins/tpm)
-
