@@ -1,4 +1,3 @@
-import = ["~/.config/alacritty/catppuccin-mocha.toml"]
 
 [env]
 TERM = "xterm-256color"
@@ -37,7 +36,7 @@ action = "CreateNewWindow"
 key = "T"
 mods = "Command"
 
-[shell]
+[terminal.shell]
 program = "/run/current-system/sw/bin/tmux"
 
 [window]
@@ -47,3 +46,8 @@ option_as_alt = "OnlyLeft"
 [window.padding]
 x = 0
 y = 5
+
+[general]
+import = ["~/.config/alacritty/catppuccin-mocha.toml"]
+
+[terminal]
