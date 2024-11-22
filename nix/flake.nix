@@ -58,7 +58,7 @@
           pkgs.tree
           pkgs.tree-sitter
           pkgs.turso-cli
-            #pkgs.zig
+          pkgs.zig
         ];
 
       homebrew = {
@@ -69,7 +69,6 @@
         brews = [
           "piszmog/tools/gtpm"
           "piszmog/tools/lopper"
-          "zig"
         ];
         casks = [
           "firefox"
