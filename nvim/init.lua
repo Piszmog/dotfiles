@@ -644,5 +644,22 @@ end
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, { pattern = { "*.templ" }, callback = templ_format })
 
+local nim_format = function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local filename = vim.api.nvim_buf_get_name(bufnr)
+  local cmd = "nph " .. vim.fn.shellescape(filename)
+
+  vim.fn.jobstart(cmd, {
+    on_exit = function()
+      -- Reload the buffer only if it's still the current buffer
+      if vim.api.nvim_get_current_buf() == bufnr then
+        vim.cmd('e!')
+      end
+    end,
+  })
+end
+
+--vim.api.nvim_create_autocmd({ "BufWritePre" }, { pattern = { "*.nim" }, callback = nim_format })
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

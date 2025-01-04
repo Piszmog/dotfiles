@@ -126,7 +126,7 @@ symbol = ""
 format = '[ $symbol $version ]($style)'
 
 [nim]
-symbol = " "
+symbol = "󰆥 "
 format = '[ $symbol $version ]($style)'
 
 [python]

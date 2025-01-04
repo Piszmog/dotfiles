@@ -32,6 +32,7 @@
           pkgs.docker
           pkgs.docker-compose
           pkgs.fd
+          pkgs.ffmpeg
 	  pkgs.fish
           pkgs.gh
           pkgs.go_1_23
@@ -44,6 +45,7 @@
           pkgs.monaspace
           pkgs.mkalias
           pkgs.neovim
+          pkgs.nph
           pkgs.nodejs_22
           pkgs.obsidian
           pkgs.python3
@@ -69,6 +71,7 @@
         brews = [
           "piszmog/tools/gtpm"
           "piszmog/tools/lopper"
+          "nim"
         ];
         casks = [
           "firefox"
