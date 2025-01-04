@@ -1,0 +1,6 @@
+theme = catppuccin-mocha
+
+font-family = MonaspiceKr Nerd Font
+font-size = 14
+
+shell-integration = fish
