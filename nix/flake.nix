@@ -76,6 +76,7 @@
         casks = [
           "firefox"
           "font-monaspace-nerd-font"
+          "ghostty"
           "pallotron-yubiswitch"
           "scroll-reverser"
           "via"
