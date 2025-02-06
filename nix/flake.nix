@@ -2,7 +2,8 @@
   description = "Pro Darwin system flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    #nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs?rev=d2faa1bbca1b1e4962ce7373c5b0879e5b12cef2";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
@@ -29,12 +30,12 @@
           #pkgs._1password-gui # broken right now
           pkgs.alacritty
           pkgs.discord
-          pkgs.docker
-          pkgs.docker-compose
+          pkgs.lazydocker
           pkgs.fd
           pkgs.ffmpeg
 	  pkgs.fish
           pkgs.gh
+          #pkgs.ghostty
           pkgs.go_1_23
           pkgs.go-migrate
           pkgs.golangci-lint
@@ -48,13 +49,17 @@
           pkgs.nph
           pkgs.nodejs_22
           pkgs.obsidian
+          pkgs.ollama
           pkgs.python3
           pkgs.ripgrep
+          pkgs.SDL2
+          pkgs.SDL2.dev
+          pkgs.SDL2_ttf
           pkgs.spotify
           pkgs.sqlc
           pkgs.sqlite
           pkgs.starship
-          pkgs.tailwindcss
+          #pkgs.tailwindcss
           pkgs.templ
           pkgs.tmux
           pkgs.tree
@@ -72,8 +77,10 @@
           "piszmog/tools/gtpm"
           "piszmog/tools/lopper"
           "nim"
+          "tailwindcss"
         ];
         casks = [
+          "docker"
           "firefox"
           "font-monaspace-nerd-font"
           "ghostty"
@@ -111,7 +118,7 @@
         dock.autohide = true;
         dock.persistent-apps = [
           "/Applications/Firefox.app"
-          "${pkgs.alacritty}/Applications/Alacritty.app"
+          "/Applications/Ghostty.app"
         ];
         finder.FXPreferredViewStyle = "clmv";
         loginwindow.GuestEnabled = false;
