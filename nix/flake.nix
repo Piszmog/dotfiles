@@ -29,25 +29,25 @@
           #pkgs._1password-gui # broken right now
           pkgs.alacritty
           pkgs.discord
-          pkgs.lazydocker
           pkgs.fd
           pkgs.ffmpeg
 	  pkgs.fish
           pkgs.gh
           #pkgs.ghostty
-          pkgs.go_1_23
+          pkgs.go_1_24
           pkgs.go-migrate
           pkgs.golangci-lint
           pkgs.goreleaser
           pkgs.jq
           pkgs.k6
+          pkgs.lazydocker
           pkgs.lazygit
           pkgs.monaspace
           pkgs.mkalias
           pkgs.neovim
           pkgs.nph
           pkgs.nodejs_22
-          pkgs.obsidian
+          #pkgs.obsidian
           pkgs.ollama
           pkgs.python3
           pkgs.ripgrep
@@ -58,8 +58,6 @@
           pkgs.sqlc
           pkgs.sqlite
           pkgs.starship
-          #pkgs.tailwindcss
-          pkgs.templ
           pkgs.tmux
           pkgs.tree
           pkgs.tree-sitter
@@ -76,13 +74,13 @@
           "piszmog/tools/gtpm"
           "piszmog/tools/lopper"
           "nim"
-          "tailwindcss"
         ];
         casks = [
           "docker"
           "firefox"
           "font-monaspace-nerd-font"
           "ghostty"
+          "orion"
           "pallotron-yubiswitch"
           "scroll-reverser"
           "via"
@@ -116,7 +114,7 @@
       system.defaults = {
         dock.autohide = true;
         dock.persistent-apps = [
-          "/Applications/Firefox.app"
+          "/Applications/Orion.app"
           "/Applications/Ghostty.app"
         ];
         finder.FXPreferredViewStyle = "clmv";
@@ -125,8 +123,6 @@
         NSGlobalDomain.AppleInterfaceStyle = "Dark";
       };
 
-      # Auto upgrade nix package and the daemon service.
-      services.nix-daemon.enable = true;
       # nix.package = pkgs.nix;
 
       # Necessary for using flakes on this system.
