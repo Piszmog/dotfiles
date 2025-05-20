@@ -166,6 +166,10 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- Netrw
+vim.g.netrw_banner = 0
+vim.g.netrw_liststyle = 3
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -992,6 +996,7 @@ require('lazy').setup({
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+        ['<CR>'] = { 'select_and_accept', 'fallback' },
       },
 
       appearance = {
