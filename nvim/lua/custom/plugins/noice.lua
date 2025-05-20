@@ -5,14 +5,7 @@ return {
     -- add any options here
   },
   config = function()
-    require('noice').setup {
-      presets = {
-        inc_rename = true,
-      },
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    }
+    require('noice').setup {}
   end,
   dependencies = {
     -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
