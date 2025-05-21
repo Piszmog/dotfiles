@@ -31,7 +31,7 @@
           pkgs.discord
           pkgs.fd
           pkgs.ffmpeg
-	  pkgs.fish
+	        pkgs.fish
           pkgs.gh
           #pkgs.ghostty
           pkgs.go_1_24
@@ -62,6 +62,7 @@
           pkgs.tree
           pkgs.tree-sitter
           pkgs.turso-cli
+          pkgs.wget
           pkgs.zig
         ];
 
@@ -91,6 +92,7 @@
         onActivation.upgrade = true;
       };
 
+      system.primaryUser = "randell";
       system.activationScripts.applications.text = let
         env = pkgs.buildEnv {
           name = "system-applications";
