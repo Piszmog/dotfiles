@@ -54,7 +54,7 @@
           pkgs.SDL2
           pkgs.SDL2.dev
           pkgs.SDL2_ttf
-          pkgs.spotify
+          #pkgs.spotify
           pkgs.sqlc
           pkgs.sqlite
           pkgs.starship
