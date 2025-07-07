@@ -28,6 +28,7 @@
         [ 
           #pkgs._1password-gui # broken right now
           pkgs.alacritty
+          pkgs.delve
           pkgs.discord
           pkgs.fd
           pkgs.ffmpeg
@@ -49,7 +50,9 @@
           pkgs.nodejs_22
           #pkgs.obsidian
           pkgs.ollama
-          pkgs.python3
+          pkgs.opencode
+          pkgs.python313
+          pkgs.python313Packages.pip
           pkgs.ripgrep
           pkgs.SDL2
           pkgs.SDL2.dev
@@ -85,7 +88,7 @@
           "pallotron-yubiswitch"
           "scroll-reverser"
           "via"
-          "zen-browser"
+          #"zen-browser"
         ];
         onActivation.cleanup = "zap";
         onActivation.autoUpdate = true;
