@@ -35,7 +35,7 @@
 	        pkgs.fish
           pkgs.gh
           #pkgs.ghostty
-          pkgs.go_1_24
+          pkgs.go
           pkgs.go-migrate
           pkgs.golangci-lint
           pkgs.goreleaser
@@ -47,17 +47,17 @@
           pkgs.mkalias
           pkgs.neovim
           pkgs.nph
-          pkgs.nodejs_22
+          pkgs.nodejs_24
           #pkgs.obsidian
           pkgs.ollama
-          pkgs.opencode
+          #pkgs.opencode
           pkgs.python313
           pkgs.python313Packages.pip
           pkgs.ripgrep
           pkgs.SDL2
           pkgs.SDL2.dev
           pkgs.SDL2_ttf
-          #pkgs.spotify
+          pkgs.spotify
           pkgs.sqlc
           pkgs.sqlite
           pkgs.starship
@@ -73,11 +73,13 @@
         enable = true;
         taps = [
           "piszmog/tools"
+          "sst/tap"
         ];
         brews = [
           "piszmog/tools/gtpm"
           "piszmog/tools/lopper"
           "nim"
+          "sst/tap/opencode"
         ];
         casks = [
           "docker"
@@ -88,7 +90,7 @@
           "pallotron-yubiswitch"
           "scroll-reverser"
           "via"
-          #"zen-browser"
+          "zen-browser"
         ];
         onActivation.cleanup = "zap";
         onActivation.autoUpdate = true;
