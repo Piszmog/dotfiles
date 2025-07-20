@@ -1,5 +1,4 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "theme": "catppuccin",
-  "log_level": "DEBUG"
+  "theme": "catppuccin"
 }
