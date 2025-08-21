@@ -467,7 +467,7 @@ require('lazy').setup({
         },
         pickers = {
           find_files = {
-            find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git/*' },
+            find_command = { 'rg', '--files', '--hidden', '--no-ignore', '--glob', '!**/.git/*', '--glob', '!**/goreleaser-dist/*' },
           },
         },
       }
@@ -786,7 +786,7 @@ require('lazy').setup({
                 parameterNames = true,
                 rangeVariableTypes = true,
               },
-              buildFlags = { '-tags=e2e' },
+              buildFlags = { '-tags=e2e,integration' },
             },
           },
         },
@@ -841,7 +841,18 @@ require('lazy').setup({
         eslint = {},
         zls = {},
         bashls = {},
-        html = {},
+        html = {
+          filetypes = {
+            'html',
+            'templ',
+          },
+        },
+        htmx = {
+          filetypes = {
+            'html',
+            'templ',
+          },
+        },
         tailwindcss = {
           filetypes = {
             'aspnetcorerazor',
@@ -894,11 +905,25 @@ require('lazy').setup({
             'vue',
             'svelte',
           },
-          init_options = {
-            userLanguages = {
-              templ = 'html',
+          settings = {
+            tailwindCSS = {
+              includeLanguages = {
+                templ = 'html',
+              },
+              classAttributes = { 'class', 'className', 'class:list', 'classList', 'ngClass' },
+              lint = {
+                cssConflict = 'warning',
+                invalidApply = 'error',
+                invalidConfigPath = 'error',
+                invalidScreen = 'error',
+                invalidTailwindDirective = 'error',
+                invalidVariant = 'error',
+                recommendedVariantOrder = 'warning',
+              },
+              validate = true,
             },
           },
+          init_options = { userLanguages = { templ = 'html' } },
         },
         svelte = {},
         jdtls = {},
@@ -974,6 +999,7 @@ require('lazy').setup({
         lua = { 'stylua' },
         go = { 'goimports', 'gofmt' },
         json = { 'jq' },
+        templ = { 'templ' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -1231,41 +1257,6 @@ require('lazy').setup({
     },
   },
 })
-
--- Templ
-local treesitter_parser_config = require('nvim-treesitter.parsers').get_parser_configs()
-treesitter_parser_config.templ = {
-  install_info = {
-    url = 'https://github.com/vrischmann/tree-sitter-templ.git',
-    files = { 'src/parser.c', 'src/scanner.c' },
-    branch = 'master',
-  },
-}
-
-vim.treesitter.language.register('templ', 'templ')
-
-vim.filetype.add {
-  extension = {
-    templ = 'templ',
-  },
-}
-
-local templ_format = function()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local filename = vim.api.nvim_buf_get_name(bufnr)
-  local cmd = 'templ fmt ' .. vim.fn.shellescape(filename)
-
-  vim.fn.jobstart(cmd, {
-    on_exit = function()
-      -- Reload the buffer only if it's still the current buffer
-      if vim.api.nvim_get_current_buf() == bufnr then
-        vim.cmd 'e!'
-      end
-    end,
-  })
-end
-
-vim.api.nvim_create_autocmd({ 'BufWritePre' }, { pattern = { '*.templ' }, callback = templ_format })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

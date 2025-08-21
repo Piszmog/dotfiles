@@ -4,3 +4,4 @@ font-family = MonaspiceKr Nerd Font
 font-size = 14
 
 shell-integration = fish
+keybind = shift+enter=text:\n

@@ -28,3 +28,5 @@ Temporary Items
 # Jetbrains
 .iml
 .idea
+
+**/.claude/settings.local.json
