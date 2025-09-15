@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
 
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
@@ -28,6 +28,8 @@
         [ 
           #pkgs._1password-gui # broken right now
           pkgs.alacritty
+          pkgs.claude-code
+          pkgs.colima
           pkgs.delve
           pkgs.discord
           pkgs.fd
@@ -37,7 +39,7 @@
           #pkgs.ghostty
           pkgs.go
           pkgs.go-migrate
-          pkgs.golangci-lint
+          #pkgs.golangci-lint
           pkgs.goreleaser
           pkgs.jq
           pkgs.k6
@@ -49,15 +51,15 @@
           pkgs.nph
           pkgs.nodejs_24
           #pkgs.obsidian
-          pkgs.ollama
+          #pkgs.ollama
           #pkgs.opencode
           pkgs.python313
           pkgs.python313Packages.pip
           pkgs.ripgrep
-          pkgs.SDL2
-          pkgs.SDL2.dev
-          pkgs.SDL2_ttf
-          pkgs.spotify
+          #pkgs.SDL2
+          #pkgs.SDL2.dev
+          #pkgs.SDL2_ttf
+          #pkgs.spotify
           pkgs.sqlc
           pkgs.sqlite
           pkgs.starship
@@ -76,21 +78,20 @@
           "sst/tap"
         ];
         brews = [
+          "golangci-lint"
           "piszmog/tools/gtpm"
           "piszmog/tools/lopper"
           "nim"
           "sst/tap/opencode"
         ];
         casks = [
-          "docker"
+          #"docker"
           "firefox"
-          "font-monaspace-nerd-font"
           "ghostty"
           "orion"
           "pallotron-yubiswitch"
           "scroll-reverser"
           "via"
-          "zen-browser"
         ];
         onActivation.cleanup = "zap";
         onActivation.autoUpdate = true;
@@ -121,7 +122,7 @@
       system.defaults = {
         dock.autohide = true;
         dock.persistent-apps = [
-          "/Applications/Orion.app"
+          "/Applications/Zen.app"
           "/Applications/Ghostty.app"
         ];
         finder.FXPreferredViewStyle = "clmv";
