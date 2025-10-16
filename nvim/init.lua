@@ -980,6 +980,7 @@ require('lazy').setup({
         go = { 'goimports', 'gofmt' },
         json = { 'jq' },
         templ = { 'templ' },
+        sql = { 'sql_formatter' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -1067,7 +1068,7 @@ require('lazy').setup({
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev' },
+        default = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
         },
@@ -1170,6 +1171,7 @@ require('lazy').setup({
         'gosum',
         'gomod',
         'nix',
+        'templ',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
