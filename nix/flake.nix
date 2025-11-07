@@ -62,6 +62,7 @@
           #pkgs.spotify
           pkgs.sqlc
           pkgs.sqlite
+          pkgs.sqlitebrowser
           pkgs.starship
           pkgs.tmux
           pkgs.tree
