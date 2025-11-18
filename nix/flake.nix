@@ -45,6 +45,7 @@
           pkgs.k6
           pkgs.lazydocker
           pkgs.lazygit
+          pkgs.libwebp
           pkgs.monaspace
           pkgs.mkalias
           pkgs.neovim
@@ -104,7 +105,7 @@
         env = pkgs.buildEnv {
           name = "system-applications";
           paths = config.environment.systemPackages;
-          pathsToLink = "/Applications";
+          pathsToLink = ["/Applications"];
         };
       in
         pkgs.lib.mkForce ''
