@@ -42,3 +42,4 @@ fish/fish_variables
 nvim/lazy-lock.json
 gcloud/
 zed
+.secrets/

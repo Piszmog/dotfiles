@@ -9,6 +9,14 @@
         "@playwright/mcp@latest"
       ],
       "enabled": true
+    },
+    "github": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp",
+      "headers": {
+        "Authorization": "Bearer {file:~/.config/opencode/.secrets/github.txt}"
+      },
+      "enabled": true
     }
   }
 }
