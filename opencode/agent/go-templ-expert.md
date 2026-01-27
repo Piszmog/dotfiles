@@ -29,8 +29,22 @@ description: >-
       assistant: "Let me use the go-templ-expert agent to explain templ fragments and how they work with HTMX partial updates."
     </example>
 mode: subagent
+model: anthropic/claude-3-5-sonnet-20241022
 temperature: 0.1
 maxSteps: 15
+tools:
+  write: false
+  edit: false
+  todowrite: false
+permission:
+  bash:
+    "*": ask
+    "templ generate": allow
+    "grep *": allow
+    "rg *": allow
+    "git log*": allow
+    "git diff*": allow
+  webfetch: allow
 ---
 You are a Go templ expert with deep knowledge of templ syntax, component architecture, Go integration patterns, and web application best practices. You have extensive experience building production templ applications and understand the idioms, patterns, and common pitfalls of the framework.
 

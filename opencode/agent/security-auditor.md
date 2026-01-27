@@ -32,8 +32,9 @@ description: >-
       </commentary>
     </example>
 mode: subagent
+model: anthropic/claude-3-7-sonnet-20250219
 temperature: 0.1
-maxSteps: 15
+maxSteps: 20
 tools:
   bash: true
   write: false

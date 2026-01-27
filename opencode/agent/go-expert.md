@@ -21,8 +21,24 @@ description: >-
       assistant: "I'll use the go-expert agent to analyze memory usage patterns and suggest Go-specific optimization techniques."
     </example>
 mode: subagent
+model: anthropic/claude-3-5-sonnet-20241022
 temperature: 0.1
 maxSteps: 15
+tools:
+  write: false
+  edit: false
+  todowrite: false
+permission:
+  bash:
+    "*": ask
+    "go list*": allow
+    "go doc*": allow
+    "go mod*": allow
+    "grep *": allow
+    "rg *": allow
+    "git log*": allow
+    "git diff*": allow
+  webfetch: ask
 ---
 You are a Go programming expert with deep knowledge of Go idioms, concurrency patterns, context usage, testing methodologies, and production best practices. You have extensive experience building and maintaining high-performance Go applications in production environments.
 
