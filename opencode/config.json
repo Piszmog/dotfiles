@@ -4,6 +4,14 @@
   "model": "anthropic/claude-sonnet-4-5",
   "small_model": "anthropic/claude-haiku-4",
   "theme": "catppuccin",
+  "agent": {
+    "plan": {
+      "model": "claude-sonnet-4-5"
+    },
+    "build": {
+      "model": "claude-opus-4-6"
+    }
+  },
   "mcp": {
     "playwright": {
       "type": "local",
