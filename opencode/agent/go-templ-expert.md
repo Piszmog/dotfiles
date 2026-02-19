@@ -29,7 +29,7 @@ description: >-
       assistant: "Let me use the go-templ-expert agent to explain templ fragments and how they work with HTMX partial updates."
     </example>
 mode: subagent
-model: anthropic/claude-3-5-sonnet-20241022
+model: anthropic/claude-sonnet-4-6
 temperature: 0.1
 maxSteps: 15
 tools:

@@ -23,7 +23,7 @@ description: >-
       assistant: "Let me consult the htmx-web-expert agent for production deployment best practices for HTMX applications."
     </example>
 mode: subagent
-model: anthropic/claude-3-5-sonnet-20241022
+model: anthropic/claude-sonnet-4-6
 temperature: 0.2
 maxSteps: 15
 tools:

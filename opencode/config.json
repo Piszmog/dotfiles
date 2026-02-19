@@ -1,15 +1,15 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "default_agent": "plan",
-  "model": "anthropic/claude-sonnet-4-5",
+  "model": "anthropic/claude-sonnet-4-6",
   "small_model": "anthropic/claude-haiku-4",
   "theme": "catppuccin",
   "agent": {
     "plan": {
-      "model": "claude-sonnet-4-5"
+      "model": "anthropic/claude-sonnet-4-6"
     },
     "build": {
-      "model": "claude-opus-4-6"
+      "model": "anthropic/claude-opus-4-6"
     }
   },
   "mcp": {

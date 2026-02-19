@@ -9,7 +9,7 @@ description: >-
   code remediation strategies, or when you want to implement preventive measures
   to avoid similar bugs in the future.
 mode: subagent
-model: anthropic/claude-3-7-sonnet-20250219
+model: anthropic/claude-sonnet-4-6
 temperature: 0.2
 maxSteps: 25
 permission:

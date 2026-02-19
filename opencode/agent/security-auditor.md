@@ -32,7 +32,7 @@ description: >-
       </commentary>
     </example>
 mode: subagent
-model: anthropic/claude-3-7-sonnet-20250219
+model: anthropic/claude-sonnet-4-6
 temperature: 0.1
 maxSteps: 20
 tools:

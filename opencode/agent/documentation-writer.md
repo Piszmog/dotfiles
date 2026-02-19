@@ -23,7 +23,7 @@ description: >-
       assistant: "I'll use the documentation-writer agent to create detailed technical documentation for your caching system implementation."
     </example>
 mode: subagent
-model: anthropic/claude-3-5-sonnet-20241022
+model: anthropic/claude-haiku-4
 temperature: 0.25
 maxSteps: 15
 permission:
