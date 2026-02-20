@@ -28,7 +28,6 @@
         [ 
           #pkgs._1password-gui # broken right now
           pkgs.alacritty
-          pkgs.claude-code
           pkgs.colima
           pkgs.delve
           pkgs.discord
