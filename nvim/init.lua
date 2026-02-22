@@ -523,6 +523,9 @@ require('lazy').setup({
 
       -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
+
+      -- JSON schema catalog for jsonls
+      'b0o/schemastore.nvim',
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -907,6 +910,14 @@ require('lazy').setup({
         },
         svelte = {},
         jdtls = {},
+        jsonls = {
+          settings = {
+            json = {
+              schemas = require('schemastore').json.schemas(),
+              validate = { enable = true },
+            },
+          },
+        },
       }
 
       ---@type MasonLspconfigSettings
