@@ -1,0 +1,6 @@
+# Ignore everything by default
+*
+
+# Track gitignore and settings
+!.gitignore
+!settings.json
