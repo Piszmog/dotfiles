@@ -36,7 +36,13 @@ fish_add_path ~/.local/bin
 # Env Vars
 set GOPATH ~/go
 # set set AWS_MFA_ARN <val>
-set XDG_CONFIG_HOME /Users/randell/.config
+set XDG_CONFIG_HOME ~/.config
+set -x CLAUDE_CONFIG_DIR ~/.config/claude
+
+# Symlink ~/.claude to config dir for plugin discovery (upstream bug workaround)
+if not test -L ~/.claude; and test -d ~/.config/claude
+    ln -sf ~/.config/claude ~/.claude
+end
 
 set fish_greeting
 
