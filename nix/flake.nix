@@ -68,6 +68,7 @@
           pkgs.tree
           pkgs.tree-sitter
           pkgs.turso-cli
+          pkgs.uv
           pkgs.wget
           pkgs.zig
         ];
