@@ -4,3 +4,15 @@
 # Track gitignore and settings
 !.gitignore
 !settings.json
+!CLAUDE.md
+
+# Track agents directory
+!agents/
+!agents/**
+
+!commands/
+!commands/**
+
+# Track plugins directory (json files only, no cache/marketplaces)
+!plugins/
+!plugins/*.json
