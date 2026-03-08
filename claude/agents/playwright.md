@@ -92,6 +92,15 @@ class LoginPage {
 4. Screenshot on failure: enable in config if not already set
 5. Narrow the failing test with `-run`/`--grep` before debugging
 
+## Strict Mode
+
+Playwright locators are strict by default — any locator that matches more than one element throws an error.
+
+- `GetByText("...")` / `getByText("...")` panics if >1 element matches
+- Use `.First()` (Go) or `.first()` (JS) when multiple matching elements are expected and intentional
+- Prefer more specific locators (`GetByRole`, `GetByLabel`, `GetByTestId`) to avoid strict-mode errors
+- When debugging a strict-mode panic, inspect the DOM for repeated text and narrow the selector
+
 ## Reviewing Test Architecture
 
 Flag:

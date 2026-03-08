@@ -13,6 +13,9 @@
 !commands/
 !commands/**
 
+!skills/
+!skills/**
+
 # Track plugins directory (json files only, no cache/marketplaces)
 !plugins/
 !plugins/*.json
