@@ -5,6 +5,14 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "/Users/randell/.claude/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "2026-03-09T01:08:14.873Z"
+    "lastUpdated": "2026-03-11T02:06:28.685Z"
+  },
+  "custom-lsp-plugins": {
+    "source": {
+      "source": "github",
+      "repo": "Piszmog/custom-lsp-plugins"
+    },
+    "installLocation": "/Users/randell/.config/claude/plugins/marketplaces/custom-lsp-plugins",
+    "lastUpdated": "2026-03-11T01:59:51.355Z"
   }
 }

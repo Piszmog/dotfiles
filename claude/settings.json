@@ -132,14 +132,26 @@
     "defaultMode": "plan"
   },
   "model": "opusplan",
+  "statusLine": {
+    "type": "command",
+    "command": "bash /Users/randell/.config/claude/statusline-command.sh"
+  },
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true
+    "playwright@claude-plugins-official": true,
+    "templ@custom-lsp-plugins": true,
+    "htmx-lsp@custom-lsp-plugins": true,
+    "tailwindcss-language-server@custom-lsp-plugins": true
   },
-  "statusLine": {
-    "type": "command",
-    "command": "bash /Users/randell/.config/claude/statusline-command.sh"
-  }
+  "extraKnownMarketplaces": {
+    "custom-lsp-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "Piszmog/custom-lsp-plugins"
+      }
+    }
+  },
+  "voiceEnabled": false
 }

@@ -24,21 +24,51 @@
     "frontend-design@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/frontend-design/205b6e0b3036",
-        "version": "205b6e0b3036",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/frontend-design/bd041495bd2a",
+        "version": "bd041495bd2a",
         "installedAt": "2026-02-27T20:19:28.106Z",
-        "lastUpdated": "2026-03-04T02:10:58.202Z",
+        "lastUpdated": "2026-03-11T01:35:39.380Z",
         "gitCommitSha": "55b58ec6e5649104f926ba7558b567dc8d33c5ff"
       }
     ],
     "playwright@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/playwright/205b6e0b3036",
-        "version": "205b6e0b3036",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/playwright/bd041495bd2a",
+        "version": "bd041495bd2a",
         "installedAt": "2026-03-08T03:45:39.104Z",
-        "lastUpdated": "2026-03-08T03:45:39.104Z",
+        "lastUpdated": "2026-03-11T01:35:39.379Z",
         "gitCommitSha": "205b6e0b30366a969412d9aab7b99bea99d58db1"
+      }
+    ],
+    "templ@custom-lsp-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/custom-lsp-plugins/templ/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-11T01:59:59.216Z",
+        "lastUpdated": "2026-03-11T01:59:59.216Z",
+        "gitCommitSha": "c30065dcd232076d506aa600c5d4609d3df9e8fb"
+      }
+    ],
+    "htmx-lsp@custom-lsp-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/custom-lsp-plugins/htmx-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-11T02:06:29.692Z",
+        "lastUpdated": "2026-03-11T02:06:29.692Z",
+        "gitCommitSha": "c30065dcd232076d506aa600c5d4609d3df9e8fb"
+      }
+    ],
+    "tailwindcss-language-server@custom-lsp-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/custom-lsp-plugins/tailwindcss-language-server/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-11T02:06:34.566Z",
+        "lastUpdated": "2026-03-11T02:06:34.566Z",
+        "gitCommitSha": "c30065dcd232076d506aa600c5d4609d3df9e8fb"
       }
     ]
   }
