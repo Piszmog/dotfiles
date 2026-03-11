@@ -70,6 +70,16 @@
         "lastUpdated": "2026-03-11T02:06:34.566Z",
         "gitCommitSha": "c30065dcd232076d506aa600c5d4609d3df9e8fb"
       }
+    ],
+    "sqls@custom-lsp-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/custom-lsp-plugins/sqls/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-11T02:16:20.789Z",
+        "lastUpdated": "2026-03-11T02:16:20.789Z",
+        "gitCommitSha": "05bbbe7153ce9c40b49d5f62778905871b8f0b29"
+      }
     ]
   }
 }
