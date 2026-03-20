@@ -24,20 +24,20 @@
     "frontend-design@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/frontend-design/bd041495bd2a",
-        "version": "bd041495bd2a",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/frontend-design/b36fd4b75301",
+        "version": "b36fd4b75301",
         "installedAt": "2026-02-27T20:19:28.106Z",
-        "lastUpdated": "2026-03-11T01:35:39.380Z",
+        "lastUpdated": "2026-03-12T01:22:38.288Z",
         "gitCommitSha": "55b58ec6e5649104f926ba7558b567dc8d33c5ff"
       }
     ],
     "playwright@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/playwright/bd041495bd2a",
-        "version": "bd041495bd2a",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/playwright/b36fd4b75301",
+        "version": "b36fd4b75301",
         "installedAt": "2026-03-08T03:45:39.104Z",
-        "lastUpdated": "2026-03-11T01:35:39.379Z",
+        "lastUpdated": "2026-03-12T01:22:38.288Z",
         "gitCommitSha": "205b6e0b30366a969412d9aab7b99bea99d58db1"
       }
     ],
@@ -79,6 +79,26 @@
         "installedAt": "2026-03-11T02:16:20.789Z",
         "lastUpdated": "2026-03-11T02:16:20.789Z",
         "gitCommitSha": "05bbbe7153ce9c40b49d5f62778905871b8f0b29"
+      }
+    ],
+    "pyright-lsp@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/pyright-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-12T02:24:19.446Z",
+        "lastUpdated": "2026-03-12T02:24:19.446Z",
+        "gitCommitSha": "b36fd4b753018b0b340803579399992a32e43502"
+      }
+    ],
+    "typescript-lsp@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/typescript-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-13T01:16:58.990Z",
+        "lastUpdated": "2026-03-13T01:16:58.990Z",
+        "gitCommitSha": "b36fd4b753018b0b340803579399992a32e43502"
       }
     ]
   }
