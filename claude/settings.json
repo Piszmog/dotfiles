@@ -157,5 +157,9 @@
       }
     }
   },
-  "voiceEnabled": false
+  "voiceEnabled": false,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  }
 }
