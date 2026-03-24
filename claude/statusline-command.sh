@@ -77,8 +77,8 @@ format_countdown() {
 }
 
 rate=""
-rl_5h=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
-rl_7d=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
+rl_5h=$(echo "$input" | jq -r '(.rate_limits.five_hour.used_percentage // empty) | if . == "" then "" else (. * 100 | round | . / 100) end')
+rl_7d=$(echo "$input" | jq -r '(.rate_limits.seven_day.used_percentage // empty) | if . == "" then "" else (. * 100 | round | . / 100) end')
 rl_5h_reset=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
 rl_7d_reset=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
 if [[ -n "$rl_5h" && -n "$rl_7d" ]]; then
