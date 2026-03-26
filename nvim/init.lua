@@ -992,6 +992,7 @@ require('lazy').setup({
         json = { 'jq' },
         templ = { 'templ' },
         sql = { 'sql_formatter' },
+        fish = { 'fish_indent' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
