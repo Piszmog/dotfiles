@@ -15,8 +15,6 @@ Stage relevant changed files (never `git add -A`), write a commit with imperativ
 
 - bullet of notable detail (optional)
 - another detail (optional)
-
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
 
 Never amend published commits. If a pre-commit hook fails, fix the issue and create a new commit.
