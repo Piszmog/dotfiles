@@ -60,6 +60,7 @@
           #pkgs.SDL2.dev
           #pkgs.SDL2_ttf
           #pkgs.spotify
+          pkgs.shellcheck
           pkgs.sqlc
           pkgs.sqlite
           pkgs.sqlitebrowser
@@ -70,7 +71,7 @@
           pkgs.turso-cli
           pkgs.uv
           pkgs.wget
-          pkgs.zig
+          #pkgs.zig
         ];
 
       homebrew = {
@@ -85,6 +86,7 @@
           "piszmog/tools/lopper"
           "nim"
           "sst/tap/opencode"
+          "zig"
         ];
         casks = [
           #"docker"

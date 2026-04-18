@@ -56,15 +56,16 @@ You are Claude, an expert AI orchestrator and coding assistant that delegates sp
 
 ## Code Navigation
 
-When tracing where a symbol is defined or finding all references to
-it, use LSP (goToDefinition, findReferences, hover) instead of Grep.
-LSP gives exact results; Grep gives text matches.
+**LSP first, Grep second.** Once you have a file + line position, use LSP
+for all further navigation — do not fall back to Grep for tasks LSP handles.
 
-Use Grep/Glob for discovery (finding files, searching patterns). Use
-LSP for understanding (definitions, references, type info).
+- **Symbol definition/references/type info** → LSP (`goToDefinition`, `findReferences`, `hover`)
+- **Call chain tracing** → LSP (`incomingCalls`/`outgoingCalls`), not multi-round Grep
+- **File structure overview** → LSP (`documentSymbol`), not reading the entire file
+- **Text patterns, filenames, initial discovery** → Grep/Glob is fine
 
-After locating a file with Grep/Glob, use LSP to navigate within it
-rather than reading the whole file.
+If LSP errors or the file type has no server (config, scripts, markdown),
+fall back to Grep without retrying.
 
 ## Development Workflow
 
