@@ -6,6 +6,12 @@
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    nix-homebrew.inputs.brew-src.follows = "brew-src";
+
+    brew-src = {
+      url = "github:Homebrew/brew";
+      flake = false;
+    };
 
     homebrew-core = {
       url = "github:homebrew/homebrew-core";

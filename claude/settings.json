@@ -6,6 +6,11 @@
     "ENABLE_LSP_TOOL": "1",
     "CLAUDE_CODE_NO_FLICKER": "1"
   },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Read(~/Documents/dev/prep-planner/**)",
@@ -159,9 +164,5 @@
     }
   },
   "voiceEnabled": false,
-  "attribution": {
-    "commit": "",
-    "pr": ""
-  },
-  "includeCoAuthoredBy": false
+  "editorMode": "vim"
 }
