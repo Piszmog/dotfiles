@@ -43,3 +43,4 @@ nvim/lazy-lock.json
 gcloud/
 zed
 .secrets/
+tmp/
