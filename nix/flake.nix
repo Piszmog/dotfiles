@@ -62,9 +62,10 @@
           pkgs.python313
           pkgs.python313Packages.pip
           pkgs.ripgrep
-          #pkgs.SDL2
-          #pkgs.SDL2.dev
-          #pkgs.SDL2_ttf
+          pkgs.sdl3
+          pkgs.sdl3-ttf
+          pkgs.sdl3-image
+          pkgs.sdl3-mixer
           #pkgs.spotify
           pkgs.shellcheck
           pkgs.sqlc
@@ -83,6 +84,8 @@
       homebrew = {
         enable = true;
         taps = [
+          "homebrew/core"
+          "homebrew/cask"
           "piszmog/tools"
           "sst/tap"
         ];
@@ -170,17 +173,15 @@
         nix-homebrew.darwinModules.nix-homebrew
         {
           nix-homebrew = {
-            # Install Homebrew under the default prefix
             enable = true;
-
-            # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
             enableRosetta = true;
-
-            # User owning the Homebrew prefix
             user = "randell";
-
-            # Automatically migrate existing Homebrew installations
             autoMigrate = true;
+
+            taps = {
+              "homebrew/homebrew-core" = inputs.homebrew-core;
+              "homebrew/homebrew-cask" = inputs.homebrew-cask;
+            };
           };
         }
       ];

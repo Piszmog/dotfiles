@@ -153,7 +153,8 @@
     "tailwindcss-language-server@custom-lsp-plugins": true,
     "sqls@custom-lsp-plugins": true,
     "pyright-lsp@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": true,
+    "zls@custom-lsp-plugins": true
   },
   "extraKnownMarketplaces": {
     "custom-lsp-plugins": {
@@ -163,6 +164,6 @@
       }
     }
   },
-  "voiceEnabled": false,
-  "editorMode": "vim"
+  "editorMode": "vim",
+  "voiceEnabled": false
 }

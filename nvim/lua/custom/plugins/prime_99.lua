@@ -13,7 +13,7 @@ return {
     local basename = vim.fs.basename(cwd)
     _99.setup {
       provider = _99.Providers.ClaudeCodeProvider, -- default: OpenCodeProvider
-      model = 'claude-sonnet-4-6',
+      model = 'claude-sonnet-4-5',
       logger = {
         level = _99.DEBUG,
         path = '/tmp/' .. basename .. '.99.debug',
@@ -86,16 +86,16 @@ return {
     -- likely ill add a mode check and assert on required visual mode
     -- so just prepare for it now
     vim.keymap.set('v', '<leader>9v', function()
-      _99.visual()
-    end)
+      _99.visual {}
+    end, { desc = '99 visual' })
 
     --- if you have a request you dont want to make any changes, just cancel it
     vim.keymap.set('n', '<leader>9x', function()
       _99.stop_all_requests()
-    end)
+    end, { desc = '99 stop_all_requests' })
 
     vim.keymap.set('n', '<leader>9s', function()
-      _99.search()
-    end)
+      _99.search {}
+    end, { desc = '99 search' })
   end,
 }

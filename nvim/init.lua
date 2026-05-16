@@ -918,6 +918,7 @@ require('lazy').setup({
             },
           },
         },
+        ols = {},
       }
 
       ---@type MasonLspconfigSettings
@@ -986,6 +987,13 @@ require('lazy').setup({
           }
         end
       end,
+      formatters = {
+        odinfmt = {
+          command = 'odinfmt',
+          args = { '-stdin' },
+          stdin = true,
+        },
+      },
       formatters_by_ft = {
         lua = { 'stylua' },
         go = { 'goimports', 'gofmt' },
@@ -993,6 +1001,7 @@ require('lazy').setup({
         templ = { 'templ' },
         sql = { 'sql_formatter' },
         fish = { 'fish_indent' },
+        odin = { 'odinfmt' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
