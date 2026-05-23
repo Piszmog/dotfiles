@@ -23,7 +23,7 @@ Fetch a GitHub issue by number, load its full context, then enter plan mode to d
    - Database migrations needed (if any)
    - New tests required
    - Potential gotchas or blockers
-7. After implementation and tests pass, run the `/simplify` skill to review changed code for reuse, quality, and efficiency
+7. After implementation and tests pass, run the `/code-review` command to review changed code for reuse, quality, and efficiency
 
 ## Notes
 

@@ -165,5 +165,6 @@
     }
   },
   "editorMode": "vim",
-  "voiceEnabled": false
+  "voiceEnabled": false,
+  "agentPushNotifEnabled": true
 }
