@@ -19,6 +19,7 @@ Fetch a GitHub issue by number, load its full context, then enter plan mode to d
    - PRs: `gh pr view <N> --json number,title,body,state,mergedAt`
 5. Identify affected areas of the codebase from context clues in the issue
 6. Enter plan mode and produce an implementation plan covering:
+   - Verifiable success criteria — use the issue's acceptance criteria; if the issue is vague, derive them (e.g. a failing test to make pass)
    - Files to create or modify
    - Database migrations needed (if any)
    - New tests required
