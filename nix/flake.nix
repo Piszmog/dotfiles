@@ -3,22 +3,13 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.url = "github:nix-darwin/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     nix-homebrew.inputs.brew-src.follows = "brew-src";
 
     brew-src = {
       url = "github:Homebrew/brew";
-      flake = false;
-    };
-
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
       flake = false;
     };
   };
@@ -39,7 +30,7 @@
           pkgs.discord
           pkgs.fd
           pkgs.ffmpeg
-	        pkgs.fish
+          pkgs.fish
           pkgs.gh
           #pkgs.ghostty
           pkgs.go
@@ -62,10 +53,6 @@
           pkgs.python313
           pkgs.python313Packages.pip
           pkgs.ripgrep
-          pkgs.sdl3
-          pkgs.sdl3-ttf
-          pkgs.sdl3-image
-          pkgs.sdl3-mixer
           #pkgs.spotify
           pkgs.shellcheck
           pkgs.sqlc
@@ -90,10 +77,16 @@
           "sst/tap"
         ];
         brews = [
+          "cliclick"
           "golangci-lint"
+          "odin"
           "piszmog/tools/gtpm"
           "piszmog/tools/lopper"
           "nim"
+          "sdl3"
+          "sdl3_ttf"
+          "sdl3_image"
+          "sdl3_mixer"
           "sst/tap/opencode"
           "zig"
         ];
@@ -109,6 +102,7 @@
         onActivation.cleanup = "zap";
         onActivation.autoUpdate = true;
         onActivation.upgrade = true;
+        onActivation.extraFlags = [ "--force-cleanup" ];
       };
 
       system.primaryUser = "randell";
@@ -177,11 +171,6 @@
             enableRosetta = true;
             user = "randell";
             autoMigrate = true;
-
-            taps = {
-              "homebrew/homebrew-core" = inputs.homebrew-core;
-              "homebrew/homebrew-cask" = inputs.homebrew-cask;
-            };
           };
         }
       ];
