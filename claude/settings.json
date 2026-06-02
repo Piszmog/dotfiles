@@ -154,7 +154,8 @@
     "sqls@custom-lsp-plugins": true,
     "pyright-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
-    "zls@custom-lsp-plugins": true
+    "zls@custom-lsp-plugins": true,
+    "lua-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "custom-lsp-plugins": {
@@ -165,6 +166,6 @@
     }
   },
   "editorMode": "vim",
-  "voiceEnabled": false,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "voiceEnabled": false
 }

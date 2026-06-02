@@ -110,6 +110,16 @@
         "lastUpdated": "2026-05-09T17:37:17.236Z",
         "gitCommitSha": "2b7a175b1e2fa986c5c0ce28360a031f308cc54f"
       }
+    ],
+    "lua-lsp@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/lua-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-06-02T03:09:07.025Z",
+        "lastUpdated": "2026-06-02T03:09:07.025Z",
+        "gitCommitSha": "b36fd4b753018b0b340803579399992a32e43502"
+      }
     ]
   }
 }

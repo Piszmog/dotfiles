@@ -447,7 +447,7 @@ require('lazy').setup({
         },
         pickers = {
           find_files = {
-            find_command = { 'rg', '--files', '--hidden', '--no-ignore', '--glob', '!**/.git/*', '--glob', '!**/goreleaser-dist/*' },
+            find_command = { 'rg', '--files', '--hidden', '--no-ignore', '--glob', '!**/.git/*', '--glob', '!**/node_modules/*', '--glob', '!**/goreleaser-dist/*' },
           },
         },
       }
