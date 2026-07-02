@@ -1,0 +1,47 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "plan",
+  "model": "opencode/deepseek-v4-flash",
+  "enabled_providers": [
+    "opencode"
+  ],
+  "agent": {
+    "plan": {
+      "description": "Default: analysis and planning, no file changes",
+      "mode": "primary",
+      "model": "opencode/deepseek-v4-flash-free"
+    },
+    "build": {
+      "description": "Small edits, boilerplate, tests, docs",
+      "mode": "primary",
+      "model": "opencode/deepseek-v4-flash-free"
+    },
+    "big": {
+      "description": "Refactors, multi-file changes, real debugging",
+      "mode": "primary",
+      "model": "opencode/glm-5.2"
+    },
+    "escalate": {
+      "description": "Last resort - genuinely stuck, hard architecture calls",
+      "mode": "primary",
+      "model": "opencode/claude-opus-4-8",
+      "steps": 15,
+      "permission": {
+        "task": {
+          "*": "deny"
+        }
+      }
+    },
+    "explore": {
+      "model": "opencode/deepseek-v4-flash"
+    },
+    "general": {
+      "model": "opencode/deepseek-v4-flash"
+    },
+    "scout": {
+      "model": "opencode/deepseek-v4-flash"
+    }
+  },
+  "share": "manual",
+  "autoupdate": true
+}
