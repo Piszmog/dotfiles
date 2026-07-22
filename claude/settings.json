@@ -65,24 +65,12 @@
       "Edit(**/secrets/**)",
       "Edit(.secrets/**)",
       "Edit(**/.secrets/**)",
-      "Write(.env*)",
-      "Write(**/.env*)",
-      "Write(secrets/**)",
-      "Write(**/secrets/**)",
-      "Write(.secrets/**)",
-      "Write(**/.secrets/**)",
       "Grep(.env*)",
       "Grep(**/.env*)",
       "Grep(secrets/**)",
       "Grep(**/secrets/**)",
       "Grep(.secrets/**)",
       "Grep(**/.secrets/**)",
-      "Glob(.env*)",
-      "Glob(**/.env*)",
-      "Glob(secrets/**)",
-      "Glob(**/secrets/**)",
-      "Glob(.secrets/**)",
-      "Glob(**/.secrets/**)",
       "Bash(cat *.env*)",
       "Bash(cat */.env*)",
       "Bash(cat .env*)",
@@ -138,7 +126,7 @@
     ],
     "defaultMode": "plan"
   },
-  "model": "opusplan",
+  "model": "sonnet",
   "statusLine": {
     "type": "command",
     "command": "bash /Users/randell/.config/claude/statusline-command.sh"
@@ -152,10 +140,10 @@
     "htmx-lsp@custom-lsp-plugins": true,
     "tailwindcss-language-server@custom-lsp-plugins": true,
     "sqls@custom-lsp-plugins": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true,
-    "zls@custom-lsp-plugins": true,
-    "lua-lsp@claude-plugins-official": true
+    "pyright-lsp@claude-plugins-official": false,
+    "typescript-lsp@claude-plugins-official": false,
+    "zls@custom-lsp-plugins": false,
+    "lua-lsp@claude-plugins-official": false
   },
   "extraKnownMarketplaces": {
     "custom-lsp-plugins": {
@@ -165,6 +153,7 @@
       }
     }
   },
+  "effortLevel": "medium",
   "editorMode": "vim",
   "agentPushNotifEnabled": true,
   "voiceEnabled": false
