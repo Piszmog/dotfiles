@@ -3,5 +3,7 @@ theme = Catppuccin Mocha
 font-family = MonaspiceKr Nerd Font
 font-size = 14
 
+copy-on-select = clipboard
+
 shell-integration = fish
 keybind = shift+enter=text:\n
