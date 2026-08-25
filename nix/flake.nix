@@ -38,8 +38,9 @@
           #pkgs.golangci-lint
           pkgs.goreleaser
           pkgs.jq
+          pkgs.just
           pkgs.k6
-          pkgs.lazydocker
+          #pkgs.lazydocker
           pkgs.lazygit
           pkgs.libwebp
           pkgs.monaspace
@@ -49,7 +50,7 @@
           pkgs.nodejs_24
           #pkgs.obsidian
           #pkgs.ollama
-          #pkgs.opencode
+          pkgs.pnpm
           pkgs.python313
           pkgs.python313Packages.pip
           pkgs.ripgrep
@@ -59,7 +60,7 @@
           pkgs.sqlite
           pkgs.sqlitebrowser
           pkgs.starship
-          pkgs.tmux
+          #pkgs.tmux
           pkgs.tree
           pkgs.tree-sitter
           pkgs.turso-cli
@@ -74,26 +75,25 @@
           "homebrew/core"
           "homebrew/cask"
           "piszmog/tools"
-          "sst/tap"
         ];
         brews = [
           "cliclick"
           "golangci-lint"
+          "nim"
           "odin"
           "piszmog/tools/gtpm"
           "piszmog/tools/lopper"
-          "nim"
           "sdl3"
           "sdl3_ttf"
           "sdl3_image"
           "sdl3_mixer"
-          "sst/tap/opencode"
           "zig"
         ];
         casks = [
           #"docker"
           "firefox"
           "ghostty"
+          "orbstack"
           "orion"
           "pallotron-yubiswitch"
           "scroll-reverser"
