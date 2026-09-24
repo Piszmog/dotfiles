@@ -57,3 +57,7 @@ source /Users/randell/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or tru
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/randell/google-cloud-sdk/path.fish.inc' ]; . '/Users/randell/google-cloud-sdk/path.fish.inc'; end
+
+# Added by OrbStack: command-line tools and integration
+# This won't be added again if you remove it.
+source ~/.orbstack/shell/init2.fish 2>/dev/null || :

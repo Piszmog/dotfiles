@@ -126,7 +126,7 @@
     ],
     "defaultMode": "plan"
   },
-  "model": "sonnet",
+  "model": "opus",
   "statusLine": {
     "type": "command",
     "command": "bash /Users/randell/.config/claude/statusline-command.sh"
@@ -155,6 +155,7 @@
   },
   "effortLevel": "medium",
   "editorMode": "vim",
+  "remoteControlAtStartup": false,
   "agentPushNotifEnabled": true,
   "voiceEnabled": false
 }

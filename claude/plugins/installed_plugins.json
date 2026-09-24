@@ -9,6 +9,15 @@
         "installedAt": "2026-02-16T04:27:43.569Z",
         "lastUpdated": "2026-02-16T04:27:43.569Z",
         "gitCommitSha": "2cd88e7947b7382e045666abee790c7f55f669f3"
+      },
+      {
+        "scope": "project",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/gopls-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-09-24T02:51:51.177Z",
+        "lastUpdated": "2026-09-24T02:51:51.177Z",
+        "gitCommitSha": "2cd88e7947b7382e045666abee790c7f55f669f3",
+        "projectPath": "/Users/randell"
       }
     ],
     "rust-analyzer-lsp@claude-plugins-official": [
@@ -19,26 +28,53 @@
         "installedAt": "2026-02-22T02:35:34.832Z",
         "lastUpdated": "2026-02-22T02:35:34.832Z",
         "gitCommitSha": "aa296ec81e8ccb49c9784f167c2c0aa625a86cec"
+      },
+      {
+        "scope": "project",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/rust-analyzer-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-09-24T02:51:51.177Z",
+        "lastUpdated": "2026-09-24T02:51:51.177Z",
+        "gitCommitSha": "aa296ec81e8ccb49c9784f167c2c0aa625a86cec",
+        "projectPath": "/Users/randell"
       }
     ],
     "frontend-design@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/frontend-design/b36fd4b75301",
-        "version": "b36fd4b75301",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/frontend-design/6bfd4e0c6d3d",
+        "version": "6bfd4e0c6d3d",
         "installedAt": "2026-02-27T20:19:28.106Z",
-        "lastUpdated": "2026-03-12T01:22:38.288Z",
-        "gitCommitSha": "55b58ec6e5649104f926ba7558b567dc8d33c5ff"
+        "lastUpdated": "2026-09-24T02:50:57.096Z",
+        "gitCommitSha": "6bfd4e0c6d3da6050984fa5ed8281d915fa7ed69"
+      },
+      {
+        "scope": "project",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/frontend-design/6bfd4e0c6d3d",
+        "version": "6bfd4e0c6d3d",
+        "installedAt": "2026-09-24T02:51:51.177Z",
+        "lastUpdated": "2026-09-24T02:51:51.177Z",
+        "gitCommitSha": "6bfd4e0c6d3da6050984fa5ed8281d915fa7ed69",
+        "projectPath": "/Users/randell"
       }
     ],
     "playwright@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/playwright/b36fd4b75301",
-        "version": "b36fd4b75301",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/playwright/6bfd4e0c6d3d",
+        "version": "6bfd4e0c6d3d",
         "installedAt": "2026-03-08T03:45:39.104Z",
-        "lastUpdated": "2026-03-12T01:22:38.288Z",
-        "gitCommitSha": "205b6e0b30366a969412d9aab7b99bea99d58db1"
+        "lastUpdated": "2026-09-24T02:50:57.097Z",
+        "gitCommitSha": "6bfd4e0c6d3da6050984fa5ed8281d915fa7ed69"
+      },
+      {
+        "scope": "project",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/claude-plugins-official/playwright/6bfd4e0c6d3d",
+        "version": "6bfd4e0c6d3d",
+        "installedAt": "2026-09-24T02:51:51.177Z",
+        "lastUpdated": "2026-09-24T02:51:51.177Z",
+        "gitCommitSha": "6bfd4e0c6d3da6050984fa5ed8281d915fa7ed69",
+        "projectPath": "/Users/randell"
       }
     ],
     "templ@custom-lsp-plugins": [
@@ -49,6 +85,15 @@
         "installedAt": "2026-03-11T01:59:59.216Z",
         "lastUpdated": "2026-03-11T01:59:59.216Z",
         "gitCommitSha": "c30065dcd232076d506aa600c5d4609d3df9e8fb"
+      },
+      {
+        "scope": "project",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/custom-lsp-plugins/templ/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-09-24T02:51:51.177Z",
+        "lastUpdated": "2026-09-24T02:51:51.177Z",
+        "gitCommitSha": "c30065dcd232076d506aa600c5d4609d3df9e8fb",
+        "projectPath": "/Users/randell"
       }
     ],
     "htmx-lsp@custom-lsp-plugins": [
@@ -59,6 +104,15 @@
         "installedAt": "2026-03-11T02:06:29.692Z",
         "lastUpdated": "2026-03-11T02:06:29.692Z",
         "gitCommitSha": "c30065dcd232076d506aa600c5d4609d3df9e8fb"
+      },
+      {
+        "scope": "project",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/custom-lsp-plugins/htmx-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-09-24T02:51:51.177Z",
+        "lastUpdated": "2026-09-24T02:51:51.177Z",
+        "gitCommitSha": "c30065dcd232076d506aa600c5d4609d3df9e8fb",
+        "projectPath": "/Users/randell"
       }
     ],
     "tailwindcss-language-server@custom-lsp-plugins": [
@@ -69,6 +123,15 @@
         "installedAt": "2026-03-11T02:06:34.566Z",
         "lastUpdated": "2026-03-11T02:06:34.566Z",
         "gitCommitSha": "c30065dcd232076d506aa600c5d4609d3df9e8fb"
+      },
+      {
+        "scope": "project",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/custom-lsp-plugins/tailwindcss-language-server/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-09-24T02:51:51.177Z",
+        "lastUpdated": "2026-09-24T02:51:51.177Z",
+        "gitCommitSha": "c30065dcd232076d506aa600c5d4609d3df9e8fb",
+        "projectPath": "/Users/randell"
       }
     ],
     "sqls@custom-lsp-plugins": [
@@ -79,6 +142,15 @@
         "installedAt": "2026-03-11T02:16:20.789Z",
         "lastUpdated": "2026-03-11T02:16:20.789Z",
         "gitCommitSha": "05bbbe7153ce9c40b49d5f62778905871b8f0b29"
+      },
+      {
+        "scope": "project",
+        "installPath": "/Users/randell/.config/claude/plugins/cache/custom-lsp-plugins/sqls/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-09-24T02:51:51.177Z",
+        "lastUpdated": "2026-09-24T02:51:51.177Z",
+        "gitCommitSha": "05bbbe7153ce9c40b49d5f62778905871b8f0b29",
+        "projectPath": "/Users/randell"
       }
     ],
     "pyright-lsp@claude-plugins-official": [
