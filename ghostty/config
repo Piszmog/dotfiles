@@ -7,3 +7,4 @@ copy-on-select = clipboard
 
 shell-integration = fish
 keybind = shift+enter=text:\n
+shell-integration-features = ssh-env,ssh-terminfo

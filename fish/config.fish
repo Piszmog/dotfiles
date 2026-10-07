@@ -4,7 +4,7 @@ fish_add_path /opt/homebrew/bin
 source ~/.config/fish/alias.fish
 
 # Fish syntax highlighting
-set -g fish_color_autosuggestion '555'  'brblack'
+set -g fish_color_autosuggestion 555 brblack
 set -g fish_color_cancel -r
 set -g fish_color_command --bold
 set -g fish_color_comment red
@@ -12,7 +12,7 @@ set -g fish_color_cwd green
 set -g fish_color_cwd_root red
 set -g fish_color_end brmagenta
 set -g fish_color_error brred
-set -g fish_color_escape 'bryellow'  '--bold'
+set -g fish_color_escape bryellow --bold
 set -g fish_color_history_current --bold
 set -g fish_color_host normal
 set -g fish_color_match --background=brblue
@@ -21,8 +21,8 @@ set -g fish_color_operator bryellow
 set -g fish_color_param cyan
 set -g fish_color_quote yellow
 set -g fish_color_redirection brblue
-set -g fish_color_search_match 'bryellow'  '--background=brblack'
-set -g fish_color_selection 'white'  '--bold'  '--background=brblack'
+set -g fish_color_search_match bryellow '--background=brblack'
+set -g fish_color_selection white --bold '--background=brblack'
 set -g fish_color_user brgreen
 set -g fish_color_valid_path --underline
 
@@ -40,6 +40,10 @@ set GOPATH ~/go
 set XDG_CONFIG_HOME ~/.config
 set -x CLAUDE_CONFIG_DIR ~/.config/claude
 
+if set -q GHOSTTY_RESOURCES_DIR
+    source "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish"
+end
+
 # Symlink ~/.claude to config dir for plugin discovery (upstream bug workaround)
 if not test -L ~/.claude; and test -d ~/.config/claude
     ln -sf ~/.config/claude ~/.claude
@@ -53,10 +57,12 @@ starship init fish | source
 # source /opt/homebrew/opt/asdf/libexec/asdf.fish
 
 # opam configuration
-source /Users/randell/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+source /Users/randell/.opam/opam-init/init.fish >/dev/null 2>/dev/null; or true
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/randell/google-cloud-sdk/path.fish.inc' ]; . '/Users/randell/google-cloud-sdk/path.fish.inc'; end
+if [ -f '/Users/randell/google-cloud-sdk/path.fish.inc' ]
+    . '/Users/randell/google-cloud-sdk/path.fish.inc'
+end
 
 # Added by OrbStack: command-line tools and integration
 # This won't be added again if you remove it.
