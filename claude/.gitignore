@@ -15,9 +15,11 @@
 
 !skills/
 !skills/**
+# Claude's skill-sync cache (third-party, re-downloadable)
+skills/synced/
 
-# Track plugins directory (json files only, no cache/marketplaces)
+# Track plugins directory (blocklist only, no cache/marketplaces)
 !plugins/
-!plugins/*.json
+!plugins/blocklist.json
 
 !statusline-command.sh

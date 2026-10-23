@@ -1,0 +1,44 @@
+{
+  "servers": [
+    {
+      "extensions": ["rs"],
+      "command": ["rust-analyzer"],
+      "rootDir": "."
+    },
+    {
+      "extensions": ["py", "pyi"],
+      "command": ["pyright-langserver", "--stdio"],
+      "rootDir": "."
+    },
+    {
+      "extensions": ["ts", "tsx", "js", "jsx", "mjs", "cjs"],
+      "command": ["typescript-language-server", "--stdio"],
+      "rootDir": "."
+    },
+    {
+      "extensions": ["templ"],
+      "command": ["templ", "lsp"],
+      "rootDir": "."
+    },
+    {
+      "extensions": ["sql"],
+      "command": ["sqls"],
+      "rootDir": "."
+    },
+    {
+      "extensions": ["html", "htm"],
+      "command": ["htmx-lsp"],
+      "rootDir": "."
+    },
+    {
+      "extensions": ["css", "scss"],
+      "command": ["tailwindcss-language-server", "--stdio"],
+      "rootDir": "."
+    },
+    {
+      "extensions": ["nix"],
+      "command": ["nixd"],
+      "rootDir": "."
+    }
+  ]
+}

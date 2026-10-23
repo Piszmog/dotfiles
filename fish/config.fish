@@ -39,6 +39,7 @@ set GOPATH ~/go
 # set set AWS_MFA_ARN <val>
 set XDG_CONFIG_HOME ~/.config
 set -x CLAUDE_CONFIG_DIR ~/.config/claude
+set -x PI_CODING_AGENT_DIR ~/.config/pi
 
 if set -q GHOSTTY_RESOURCES_DIR
     source "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish"

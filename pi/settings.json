@@ -1,0 +1,21 @@
+{
+  "$schema": "https://pi.dev/schemas/settings.schema.json",
+  "lastChangelogVersion": "1.4.0",
+  "defaultProvider": "opencode-go",
+  "defaultModel": "deepseek-v4.1-flash",
+  "packages": [
+    "npm:@narumitw/pi-plan-mode",
+    "git:github.com/otahontas/pi-coding-agent-catppuccin"
+  ],
+  "theme": "catppuccin-mocha",
+  "defaultTools": [
+    "+grep",
+    "+find",
+    "+ls"
+  ],
+  "defaultThinkingLevel": "high",
+  "quietStartup": true,
+  "showCacheMissNotices": true,
+  "enableInstallTelemetry": false,
+  "enableAnalytics": false
+}

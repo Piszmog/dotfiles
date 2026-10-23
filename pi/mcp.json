@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "gopls": {
+      "command": "gopls",
+      "args": [
+        "mcp"
+      ],
+      "description": "Go language server: definitions, references, symbols, diagnostics, and call hierarchy for the current workspace.",
+      "exposure": "direct",
+      "timeout": 120
+    },
+    "cclsp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "cclsp@0.7.0"
+      ],
+      "env": {
+        "CCLSP_CONFIG_PATH": "${HOME}/.config/pi/cclsp.json"
+      },
+      "description": "LSP navigation for Rust, Python, TypeScript, templ, SQL, HTML, Tailwind, and Nix: definitions, references, hover, workspace symbols, implementations, call hierarchy, rename, and diagnostics. Go is handled by gopls.",
+      "exposure": "direct",
+      "timeout": 120
+    }
+  }
+}

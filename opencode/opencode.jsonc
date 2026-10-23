@@ -2,21 +2,9 @@
   "$schema": "https://opencode.ai/config.json",
   "default_agent": "plan",
   "share": "disabled",
-  "provider": {
-    "ollama": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "Ollama",
-      "options": {
-        "baseURL": "http://192.168.50.2:11434/v1"
-      },
-      "models": {
-        "qwen3:14b": {
-          "name": "qwen3"
-        },
-        "qwen2.5-coder:14b": {
-          "name": "qwen2-coder"
-        }
-      }
-    }
-  }
+  "model": "opencode-go/deepseek-v4.1-flash",
+  "policies": [
+    { "action": "provider.use", "resource": "*", "effect": "deny" },
+    { "action": "provider.use", "resource": "opencode-go", "effect": "allow" }
+  ]
 }

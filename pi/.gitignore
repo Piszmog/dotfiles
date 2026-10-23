@@ -1,0 +1,49 @@
+# Ignore everything by default
+*
+
+# Track configuration
+!.gitignore
+!settings.json
+!keybindings.json
+!models.json
+!mcp.json
+!cclsp.json
+!AGENTS.md
+!AGENTS.override.md
+!SYSTEM.md
+!APPEND_SYSTEM.md
+
+# Extensions
+!extensions/
+!extensions/**
+
+# Prompt templates
+!prompts/
+!prompts/**
+
+# Themes
+!themes/
+!themes/**
+
+# Track our own skill; third-party skills stay local
+!skills/
+!skills/ship/
+!skills/ship/**
+
+# Keep secrets, caches, and editor junk out even inside whitelisted dirs
+.DS_Store
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+node_modules/
+.env
+.env.*
+.envrc
+secrets/
+.secrets/
+!.env.example
+!.env.sample
+!.env.template
+!.env.dist
