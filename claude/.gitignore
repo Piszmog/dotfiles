@@ -17,6 +17,8 @@
 !skills/**
 # Claude's skill-sync cache (third-party, re-downloadable)
 skills/synced/
+# gh CLI-installed skills (re-downloadable)
+skills/gh-stack/
 
 # Track plugins directory (blocklist only, no cache/marketplaces)
 !plugins/
