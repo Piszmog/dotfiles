@@ -13,7 +13,7 @@ Fetch latest main, rebase the current branch onto it, then run tests to confirm 
    - Show each conflicting file and the conflict diff
    - Resolve trivial conflicts (whitespace, import ordering) automatically
    - For non-trivial conflicts, pause and ask the user which version to keep
-5. After clean rebase, run `go build ./...` (or equivalent) to confirm it compiles
+5. After clean rebase, run the project's build or type-check to confirm it compiles (`go build ./...`, `cargo check`, `npm run build`, or the project's own task)
 6. Run unit tests via `/test-all --unit`
 7. Report the result: commits rebased, any conflicts resolved, test status
 

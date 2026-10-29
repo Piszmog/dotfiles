@@ -12,16 +12,19 @@ Run the following sequence in order, stopping on any failure and reporting it:
    ```
    If there are conflicts, report them and stop — do not auto-resolve.
 
-2. **Unit tests with race detector**
-   Run the project's unit test suite. Use the command from AGENTS.md (typically `go test -race ./...`).
+2. **Unit tests**
+   Run the project's unit test task: a `justfile`/`Makefile` target or a command from the project `AGENTS.md` (`just test`, `make test`).
+   Fallbacks when the project defines nothing: `go test -race ./...` (Go), `cargo test` (Rust), `npm test` (Node).
    Stop if any test fails.
 
 3. **E2E tests**
-   Run the full E2E suite. Use the command from AGENTS.md (typically `go test -v ./... -tags=e2e`).
+   Run the project's e2e task (`just e2e`, `make e2e`, or the command in the project `AGENTS.md`).
+   Fallbacks: `go test -v ./... -tags=e2e` (Go), `npx playwright test` (Node).
    Stop if any test fails.
 
 4. **Lint**
-   Run the linter. Use the command from AGENTS.md (typically `golangci-lint run`).
+   Run the project's lint task (`just lint`, `make lint`).
+   Fallbacks: `golangci-lint run` (Go), `cargo fmt` plus `cargo clippy --all-targets -- -D warnings` (Rust), `eslint .` or `biome check .` (JS/TS).
    Fix any findings before continuing — do not proceed with lint failures.
 
 5. **Commit** (if there are uncommitted changes)
