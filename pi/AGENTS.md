@@ -61,7 +61,7 @@ extension is not installed, so keep work in the main context instead of delegati
 
 ## Secrets
 
-A secrets guard blocks reads of `.env*` files and `secrets/` directories, including
+A secrets guard blocks reads of `.env*` files, `secrets.*` files, and `secrets/` directories, including
 via bash. Do not try to bypass it with another command. If a task genuinely needs a
 value, say which variable you need and ask the user to provide it.
 
@@ -95,15 +95,22 @@ retrying.
 
 ## Development Workflow
 
+**Command precedence.** A project's own commands (`justfile`, `Makefile`, or the project `AGENTS.md`) win over the language defaults in prompts and skills. Global defaults are fallbacks for projects that define nothing. Do not run `cargo`/`go` directly when the project says to drive everything through a task runner.
+
 - Always run tests before committing (`/test-all`)
 - Fix all lint errors before creating a PR (`/fix`)
 - When planning features, fetch the GitHub issue first: `/issue <N>`
 - Plan mode for any change touching >3 files
 - `/review-team` is opt-in, not automatic — reserve it for high-stakes branches
 - Use `/ship` for the full rebase → test → lint → commit → push → PR pipeline
+- In Go workspaces, follow the `go` skill: `go doc` for signatures, targeted `go test`. Post-edit formatting and compile errors come from the `lang-check` extension, so use `go_diagnostics` for files you did not just edit or for workspace-wide analysis
+- In Rust workspaces, follow the `rust` skill: read `Cargo.toml` `[lints]`, `clippy.toml`, and `rust-toolchain.toml` before editing; prefer `cargo check --all-targets` over `cargo build` while iterating
+- `lang-check` covers Go and Rust only. For TypeScript, Python, templ, SQL, HTML, and Nix there is no post-edit check — run the project's own linter (or `get_diagnostics` from `cclsp`) when a change matters
+- MCP language tools are gated per workspace by `lang-gate`: `gopls` tools exist only in Go workspaces, `cclsp` tools only where the repo layout suggests a server (a manifest marker or `.templ` files). If a language tool is unexpectedly missing, check `/lang-gate status` before concluding the server is down
 
 ## Session Management
 
 - Use `/new` between unrelated tasks to reset context
 - Use `/issue <N>` to start any feature work — never describe the issue manually
 - Run `/reload` after changing Pi config, skills, or templates
+- After changing `lang-check` or `lang-gate`, run `node --test 'tests/*.test.ts'`, then `/reload` so Pi picks up the new extension code
