@@ -1,7 +1,8 @@
 /**
  * Secrets Guard
  *
- * Blocks model tool calls from reading `.env` files and `secrets/` directories.
+ * Blocks model tool calls from reading `.env` files, `secrets.*` files, and
+ * `secrets/` directories.
  * Ports the Claude Code deny rules to Pi's built-in tools plus bash.
  *
  * Covered: read, edit, write, grep, find, ls, bash, powershell.
@@ -30,6 +31,9 @@ const SECRET_DIRS = new Set(["secrets", ".secrets"]);
 /** `.env`, `.envrc`, `.env.local`, `.env.production.local`, ... */
 const ENV_NAME = /^\.env(?:rc)?(?:\.[A-Za-z0-9_-]+)*$/i;
 
+/** `secrets.yml`, `secrets.prod.yaml`, `.secrets.json`, ... */
+const SECRET_NAME = /^\.?secrets(?:\.[A-Za-z0-9_-]+)+$/i;
+
 /** Inline match for an `.env*` name inside a larger command string. */
 const ENV_INLINE = /(?:^|[^\w.-])\.env(?:rc)?(?:\.[A-Za-z0-9_-]+)*(?=$|[^\w.-])/gi;
 
@@ -49,6 +53,10 @@ function splitSegments(value: string): string[] {
 
 function isEnvName(name: string): boolean {
 	return ENV_NAME.test(name) && !ALLOWED_ENV_NAMES.has(name.toLowerCase());
+}
+
+function isSecretName(name: string): boolean {
+	return SECRET_NAME.test(name);
 }
 
 function expandHome(value: string): string {
@@ -77,6 +85,7 @@ export function isProtectedPath(raw: string, cwd: string): boolean {
 
 		const base = parts[parts.length - 1]!;
 		if (isEnvName(base)) return true;
+		if (isSecretName(base)) return true;
 		if (SECRET_DIRS.has(base.toLowerCase())) return true;
 		if (parts.slice(0, -1).some((part) => SECRET_DIRS.has(part.toLowerCase()))) return true;
 	}
