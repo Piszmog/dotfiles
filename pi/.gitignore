@@ -17,6 +17,10 @@
 !extensions/
 !extensions/**
 
+# Extension tests (node --test 'tests/*.test.ts')
+!tests/
+!tests/**
+
 # Prompt templates
 !prompts/
 !prompts/**
@@ -29,6 +33,10 @@
 !skills/
 !skills/ship/
 !skills/ship/**
+!skills/go/
+!skills/go/**
+!skills/rust/
+!skills/rust/**
 
 # Keep secrets, caches, and editor junk out even inside whitelisted dirs
 .DS_Store
