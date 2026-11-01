@@ -28,6 +28,22 @@ extension is not installed, so keep work in the main context instead of delegati
 - Prefer targeted read (offset/limit) and grep over reading whole files when you only need one section
 - Don't narrate routine steps ("Now I'll..."); state results and decisions, not process
 
+## Output Style
+
+Write chat replies and PR bodies in Simplified Technical English. Code, identifiers, commit
+messages, and file paths are exempt. Code comments and docs written to files follow the
+project's style.
+
+- One idea per sentence. Keep sentences at 20 words or fewer.
+- Use active voice and simple tenses: "The gate blocks the command," not "The command will be blocked."
+- One instruction per step. Do not chain steps with "and then".
+- Pick the short common word: "use" not "utilize", "start" not "initiate", "show" not "demonstrate".
+- Expand an uncommon abbreviation on first use. Common terms (PR, CLI, LSP, MCP, API) need no expansion.
+- Avoid noun stacks: "the parser fails" not "a parser failure occurrence".
+- State the result first. Keep detail only if it changes what the reader does next.
+- Cut hedges and marketing words: "I think", "perhaps", "just", "simply", "robust", "seamless".
+  State an assumption plainly instead; that is not a hedge. Do not hide real uncertainty. Mark it plainly: "Not verified: ...".
+
 ## Surgical Changes
 
 - Touch only what the request requires; every changed line should trace to it
@@ -61,16 +77,23 @@ extension is not installed, so keep work in the main context instead of delegati
 
 ## Secrets
 
-A secrets guard blocks reads of `.env*` files, `secrets.*` files, and `secrets/` directories, including
-via bash. Do not try to bypass it with another command. If a task genuinely needs a
-value, say which variable you need and ask the user to provide it.
+A secrets guard blocks reads of `.env*` files, `envrc` files, `secrets.*` files, `secrets/`
+directories, and `~/.ssh` / `~/.gnupg`, including via bash. Do not try to bypass it with another
+command. If a task genuinely needs a value, say which variable you need and ask the user to
+provide it.
+
+A shell gate (`/shell-gate on|off|status`, rules in `shell-gate.json`) decides whether a shell
+command may run. Denied commands are denied by policy — never retry one another way; report the
+blocked command to the user. Commands that ask need approval (allow once, allow for this session,
+block), and are blocked outright in print/RPC mode where there is no UI.
 
 ## Git Workflow
 
-- Stage specific files, never `git add -A` without reviewing
+- Stage specific files, never `git add -A` or `git add .` (both are denied by the shell gate)
 - Commit subject: imperative mood, <72 chars, no trailing period
 - PR title matches commit subject; PR body summarizes changes and references the issue number
-- Never skip pre-commit hooks (`--no-verify`); never squash or force-push to main/master
+- Never skip pre-commit hooks: `--no-verify` and its short form `git commit -n` are denied
+- Never squash or force-push to main/master (denied); a plain `git push` asks for approval, including inside `/ship`
 - Ask before taking irreversible actions (deleting files, pushing, etc.)
 - Use `gh pr create` for pull requests
 
@@ -82,15 +105,17 @@ hover, call chains, and document symbols — do not fall back to grep for tasks 
 handles. If LSP errors or the file type has no server, fall back to grep without
 retrying.
 
-- Go: the `gopls` MCP server is enabled with direct tools. Use `go_search`,
-  `go_symbol_references`, `go_file_context`, `go_diagnostics`, `go_package_api`,
-  `go_workspace`, `go_rename_symbol`, and `go_vulncheck` instead of grep when
-  navigating Go code.
-- Rust, Python, TypeScript, templ, SQL, HTML, and Tailwind: the `cclsp` MCP
-  server is enabled with direct tools. Use `find_definition`, `find_references`,
+- Go: four `gopls` MCP tools are declared directly — `go_search`,
+  `go_symbol_references`, `go_file_context`, `go_diagnostics`. Use them instead of
+  grep when navigating Go code. `go_package_api`, `go_workspace`,
+  `go_rename_symbol`, and `go_vulncheck` exist but are deferred: load them with
+  `tool_search` before calling.
+- Rust, Python, TypeScript, templ, SQL, HTML, and Tailwind: three `cclsp` MCP tools
+  are declared directly — `find_definition`, `find_references`, `get_diagnostics`.
   `get_hover`, `find_workspace_symbols`, `find_implementation`,
   `prepare_call_hierarchy`, `get_incoming_calls`, `get_outgoing_calls`,
-  `get_diagnostics`, `rename_symbol`, and `rename_symbol_strict` instead of grep.
+  `rename_symbol`, and `rename_symbol_strict` are deferred: load them with
+  `tool_search` first.
 - Nix: `nixd` is configured through `cclsp`; use the same cclsp tools.
 
 ## Development Workflow
@@ -105,12 +130,13 @@ retrying.
 - Use `/ship` for the full rebase → test → lint → commit → push → PR pipeline
 - In Go workspaces, follow the `go` skill: `go doc` for signatures, targeted `go test`. Post-edit formatting and compile errors come from the `lang-check` extension, so use `go_diagnostics` for files you did not just edit or for workspace-wide analysis
 - In Rust workspaces, follow the `rust` skill: read `Cargo.toml` `[lints]`, `clippy.toml`, and `rust-toolchain.toml` before editing; prefer `cargo check --all-targets` over `cargo build` while iterating
-- `lang-check` covers Go and Rust only. For TypeScript, Python, templ, SQL, HTML, and Nix there is no post-edit check — run the project's own linter (or `get_diagnostics` from `cclsp`) when a change matters
-- MCP language tools are gated per workspace by `lang-gate`: `gopls` tools exist only in Go workspaces, `cclsp` tools only where the repo layout suggests a server (a manifest marker or `.templ` files). If a language tool is unexpectedly missing, check `/lang-gate status` before concluding the server is down
+- `lang-check` covers Go, Rust, and templ. Go runs `goimports` + `gopls check`, Rust runs `rustfmt` + `cargo check --all-targets`, templ runs `templ generate -f` then `gopls check` on the generated `_templ.go` (positions there are reported with a `(near file.templ:N)` hint, which is approximate — templ emits no `//line` directives). For TypeScript, Python, SQL, HTML, and Nix there is no post-edit check — run the project's own linter (or `get_diagnostics` from `cclsp`) when a change matters
+- MCP language tools are gated per workspace by `lang-gate`: `gopls` tools exist only in Go workspaces, `cclsp` tools only where the repo layout suggests a server (a manifest marker or `.templ` files). If a language tool is unexpectedly missing, check `/lang-gate status` before concluding the server is down. The gate decides opt-out once per server, so **each MCP server must keep at least one `direct` tool** in `mcp.json`; a server declared entirely `deferred` is recorded as a user opt-out and the gate silently stops gating it
+- Worktrees: Pi resolves project trust from the working directory and its parents, so keep worktrees under one directory (e.g. `~/Documents/dev/.worktrees/`) and trust that parent once instead of re-approving each worktree
 
 ## Session Management
 
 - Use `/new` between unrelated tasks to reset context
 - Use `/issue <N>` to start any feature work — never describe the issue manually
 - Run `/reload` after changing Pi config, skills, or templates
-- After changing `lang-check` or `lang-gate`, run `node --test 'tests/*.test.ts'`, then `/reload` so Pi picks up the new extension code
+- After changing `lang-check`, `lang-gate`, or `shell-gate`, run `node --test 'tests/*.test.ts'`, then `/reload` so Pi picks up the new extension code. `shell-gate.json` edits also need `/reload`

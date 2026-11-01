@@ -13,6 +13,11 @@
  *   `tests/`, `benches/`, or `#[cfg(test)]` modules. The first check of a crate in this process is
  *   the expensive cold build, so it covers the library only and every later check gets the full
  *   target set; a timed-out cold build still leaves the cache warm for the next one.
+ * - templ: `templ generate -f <file>` in the module root, then `gopls check` on the generated
+ *   `<name>_templ.go`. templ's own errors already name the `.templ` file, so they pass through
+ *   unchanged. gopls reports against the generated file, which carries no `//line` directives, so
+ *   a position cannot be mapped back exactly; each error is annotated with the nearest
+ *   `templ.Error{FileName, Line}` found in the following lines and labelled approximate.
  *
  * Two things are deliberately not the obvious choice:
  *
@@ -106,6 +111,53 @@ export function parseGoCheck(
 		errors.push(`${shown}:${line}:${column} ${message}`);
 	}
 	return dedupe(errors);
+}
+
+/** `web/page.templ` generates `web/page_templ.go` beside it. */
+export function generatedPath(templFile: string): string {
+	return templFile.replace(/\.templ$/, "_templ.go");
+}
+
+/** `path/file.templ:line:col: message` lines from `templ generate`, passed through unchanged. */
+export function parseTemplGenerate(output: string): string[] {
+	const errors: string[] = [];
+	for (const raw of output.split("\n")) {
+		const line = raw.trim();
+		if (!line) continue;
+		const match = /([^\s:]+\.templ):(\d+):(\d+):?\s*(.*)$/.exec(line);
+		if (match) {
+			const [, file = "", row = "", column = "", message = ""] = match;
+			errors.push(message ? `${file}:${row}:${column} ${message}` : `${file}:${row}:${column}`);
+			continue;
+		}
+		if (/\.templ/.test(line) && /error|expected|unexpected|failed/i.test(line)) errors.push(line);
+	}
+	return dedupe(errors);
+}
+
+/**
+ * Nearest `templ.Error{FileName, Line}` at or after `line` in a generated file, as
+ * `source.templ:N`. Generated code has no `//line` directives, so this is a hint, not a mapping.
+ */
+export function templSourceHint(
+	generatedFile: string,
+	line: number,
+	read: (path: string) => string = (path) => readFileSync(path, "utf8"),
+): string | undefined {
+	let source: string;
+	try {
+		source = read(generatedFile);
+	} catch {
+		return undefined;
+	}
+	const window = source
+		.split("\n")
+		.slice(Math.max(0, line - 1), line + 10)
+		.join("\n");
+	const file = /FileName:\s*"([^"]+)"/.exec(window);
+	const at = /Line:\s*(\d+)/.exec(window);
+	if (!file || !at) return undefined;
+	return `${file[1]}:${at[1]}`;
 }
 
 function realpathOrUndefined(path: string): string | undefined {
@@ -502,6 +554,72 @@ export default function (pi: ExtensionAPI) {
 		return summary;
 	};
 
+	const runTemplBatch = async (
+		moduleRoot: string,
+		files: string[],
+		signal: AbortSignal | undefined,
+	): Promise<CheckResult> => {
+		const templFiles = files.filter((file) => file.endsWith(".templ"));
+		if (templFiles.length === 0) return { errors: [], notes: [] };
+		const notes: string[] = [];
+		const errors: string[] = [];
+		if (missing.has("templ")) return { errors, notes };
+
+		let displayRoot = moduleRoot;
+		try {
+			displayRoot = realpathSync.native(moduleRoot);
+		} catch {
+			// Keep the unresolved root; parseGoCheck falls back to the absolute path.
+		}
+
+		const targets = templFiles.map((file) => localTo(moduleRoot, file));
+		const generate = await pi.exec("templ", ["generate", "-f", ...targets], {
+			cwd: moduleRoot,
+			timeout: GO_TIMEOUT_MS,
+			signal,
+		});
+		if (signal?.aborted) return { errors: [], notes };
+		if (generate.killed) return { errors, notes, unavailable: "templ generate timed out" };
+		if (didNotStart(generate)) {
+			missing.add("templ");
+			return { errors, notes, unavailable: "templ not installed" };
+		}
+		// templ names the .templ file in its own errors, so nothing needs remapping.
+		errors.push(...parseTemplGenerate(`${generate.stdout}\n${generate.stderr}`));
+
+		if (missing.has("gopls")) return { errors, notes };
+		const generated = targets.map(generatedPath).filter((target) => existsSync(join(moduleRoot, target)));
+		if (generated.length === 0) return { errors, notes };
+
+		const result = await pi.exec("gopls", ["check", "-severity=error", ...generated], {
+			cwd: moduleRoot,
+			timeout: GO_TIMEOUT_MS,
+			signal,
+		});
+		if (signal?.aborted) return { errors: [], notes };
+		if (result.killed) return { errors, notes, unavailable: "gopls check timed out" };
+		if (didNotStart(result)) {
+			missing.add("gopls");
+			return { errors, notes, unavailable: "gopls not installed" };
+		}
+
+		const output = `${result.stdout}\n${result.stderr}`;
+		for (const error of parseGoCheck(output, [moduleRoot, displayRoot])) {
+			const match = /^(.+?):(\d+):(\d+) (.*)$/.exec(error);
+			if (!match) {
+				errors.push(error);
+				continue;
+			}
+			const [, shown = "", row = "", column = "", message = ""] = match;
+			const hint = templSourceHint(join(moduleRoot, shown), Number(row));
+			errors.push(hint ? `${shown}:${row}:${column} ${message} (near ${hint}, approximate)` : error);
+		}
+
+		const unique = dedupe(errors);
+		if (unique.length > MAX_DIAGNOSTICS) return { errors: unique, notes, log: writeLog("templ", output) };
+		return { errors: unique, notes };
+	};
+
 	pi.on("tool_result", async (event, ctx) => {
 		if (!enabled || event.isError) return undefined;
 		if (event.toolName !== "edit" && event.toolName !== "write") return undefined;
@@ -526,6 +644,12 @@ export default function (pi: ExtensionAPI) {
 			// A Go module and a Cargo workspace can share a root, so the queue key carries the language.
 			root = `rust:${workspaceRootFor(crateRoot)}`;
 			run = (files, signal) => runRustBatch(files, signal);
+		} else if (file.endsWith(".templ")) {
+			const moduleRoot = findUp(dirname(file), ["go.mod", "go.work"]);
+			if (!moduleRoot) return undefined;
+			kind = "gopls check (templ)";
+			root = `templ:${moduleRoot}`;
+			run = (files, signal) => runTemplBatch(moduleRoot, files, signal);
 		} else {
 			return undefined;
 		}
@@ -541,7 +665,7 @@ export default function (pi: ExtensionAPI) {
 	});
 
 	pi.registerCommand("lang-check", {
-		description: "Show or toggle post-edit Go/Rust formatting and compile checks (on|off|status)",
+		description: "Show or toggle post-edit Go/Rust/templ formatting and compile checks (on|off|status)",
 		handler: async (args, ctx) => {
 			const action = args.trim().toLowerCase();
 			if (action === "off") enabled = false;
@@ -551,7 +675,7 @@ export default function (pi: ExtensionAPI) {
 				return;
 			}
 			ctx.ui.notify(
-				`Language check ${enabled ? "on" : "off"} (Go: goimports + gopls check, Rust: rustfmt + cargo check --all-targets)`,
+				`Language check ${enabled ? "on" : "off"} (Go: goimports + gopls check, Rust: rustfmt + cargo check --all-targets, templ: templ generate + gopls check)`,
 				enabled ? "info" : "warning",
 			);
 		},

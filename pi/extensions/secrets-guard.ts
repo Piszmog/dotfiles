@@ -2,7 +2,7 @@
  * Secrets Guard
  *
  * Blocks model tool calls from reading `.env` files, `secrets.*` files, and
- * `secrets/` directories.
+ * `secrets/`, `.ssh/`, and `.gnupg/` directories.
  * Ports the Claude Code deny rules to Pi's built-in tools plus bash.
  *
  * Covered: read, edit, write, grep, find, ls, bash, powershell.
@@ -26,7 +26,7 @@ const ALLOWED_ENV_NAMES = new Set([
 ]);
 
 /** Directory names whose contents are always protected. */
-const SECRET_DIRS = new Set(["secrets", ".secrets"]);
+const SECRET_DIRS = new Set(["secrets", ".secrets", ".ssh", ".gnupg"]);
 
 /** `.env`, `.envrc`, `.env.local`, `.env.production.local`, ... */
 const ENV_NAME = /^\.env(?:rc)?(?:\.[A-Za-z0-9_-]+)*$/i;

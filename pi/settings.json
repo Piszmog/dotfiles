@@ -4,18 +4,22 @@
   "defaultProvider": "opencode-go",
   "defaultModel": "deepseek-v4.1-flash",
   "packages": [
-    "npm:@narumitw/pi-plan-mode",
-    "git:github.com/otahontas/pi-coding-agent-catppuccin"
+    "npm:@narumitw/pi-plan-mode@0.59.4",
+    "git:github.com/otahontas/pi-coding-agent-catppuccin@9a716a630c911a4d29d9520a8d5f87e3b8867f93"
   ],
   "theme": "catppuccin-mocha",
   "defaultTools": [
     "+grep",
     "+find",
-    "+ls"
+    "+ls",
+    "+tool_search"
   ],
-  "defaultThinkingLevel": "high",
   "quietStartup": true,
   "showCacheMissNotices": true,
   "enableInstallTelemetry": false,
-  "enableAnalytics": false
+  "enableAnalytics": false,
+  "compaction": {
+    "reserveTokens": 24000,
+    "keepRecentTokens": 16000
+  }
 }

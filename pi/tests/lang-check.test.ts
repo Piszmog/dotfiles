@@ -12,7 +12,15 @@ import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import langCheck, { cargoEdition, parseCargoCheck, parseGoCheck, workspaceRootFor } from "../extensions/lang-check.ts";
+import langCheck, {
+	cargoEdition,
+	generatedPath,
+	parseCargoCheck,
+	parseGoCheck,
+	parseTemplGenerate,
+	templSourceHint,
+	workspaceRootFor,
+} from "../extensions/lang-check.ts";
 
 interface ExecCall {
 	cmd: string;
@@ -291,4 +299,82 @@ test("edits that arrive together share one check per batch", async () => {
 	const checks = calls.filter((call) => call.cmd === "cargo").length;
 	assert.ok(checks <= 2, `expected at most 2 cargo runs for a 3-file burst, got ${checks}`);
 	assert.ok(results.filter(Boolean).length <= 2, "the batch reports once, not once per file");
+});
+
+test("generatedPath maps a .templ file to its generated Go sibling", () => {
+	assert.equal(generatedPath("page.templ"), "page_templ.go");
+	assert.equal(generatedPath("web/components/nav.templ"), "web/components/nav_templ.go");
+	assert.equal(generatedPath("page.templ.go"), "page.templ.go");
+});
+
+test("parseTemplGenerate keeps the .templ path in templ's own errors", () => {
+	const output = [
+		"generating code: web/nav.templ:12:3: unexpected token",
+		"web/nav.templ:20:1: expected end of block",
+		"templ: some banner",
+	].join("\n");
+	assert.deepEqual(parseTemplGenerate(output), [
+		"web/nav.templ:12:3 unexpected token",
+		"web/nav.templ:20:1 expected end of block",
+	]);
+});
+
+test("templSourceHint finds the nearest templ.Error in the generated file", () => {
+	const root = tree({
+		"page_templ.go": [
+			"package ui",
+			"",
+			"func render() {",
+			'\ttempl.Error{Err: nil, FileName: "page.templ", Line: 12, Col: 3}',
+			"}",
+			"",
+		].join("\n"),
+	});
+	const file = join(root, "page_templ.go");
+	assert.equal(templSourceHint(file, 3), "page.templ:12");
+	assert.equal(templSourceHint(file, 40), undefined, "no error struct in the window");
+	assert.equal(templSourceHint(join(root, "missing_templ.go"), 1), undefined);
+});
+
+test("a .templ edit runs templ generate then gopls check and annotates the source", async () => {
+	const module = tree({
+		"go.mod": "module example.com/ui\n",
+		"web/nav.templ": "package ui\n",
+		"web/nav_templ.go": [
+			"package ui",
+			"",
+			"func render() {",
+			'\ttempl.Error{Err: nil, FileName: "web/nav.templ", Line: 7, Col: 2}',
+			"}",
+			"",
+		].join("\n"),
+	});
+	const { calls, exec } = recorder((call) => {
+		if (call.cmd === "templ") return ok("generated web/nav_templ.go\n");
+		return failed("web/nav_templ.go:3:2: undefined: render\n");
+	});
+	const { edited } = harness(exec);
+
+	const text = summary(await edited("web/nav.templ", module));
+
+	assert.deepEqual(
+		calls.map((call) => call.cmd),
+		["templ", "gopls"],
+	);
+	assert.deepEqual(calls[0]?.args.slice(0, 2), ["generate", "-f"]);
+	assert.ok(calls[0]?.args.includes("web/nav.templ"), "generate targets the edited template");
+	assert.ok(calls[1]?.args.includes("web/nav_templ.go"), "gopls checks the generated file");
+	assert.match(text, /web\/nav_templ\.go:3:2 undefined: render/);
+	assert.match(text, /near web\/nav\.templ:7, approximate/);
+});
+
+test("a missing templ binary is reported once, without a gopls run", async () => {
+	const module = tree({ "go.mod": "module example.com/ui\n", "page.templ": "package ui\n" });
+	const { calls, exec } = recorder(() => failed());
+	const { edited } = harness(exec);
+
+	const text = summary(await edited("page.templ", module));
+
+	assert.equal(calls.filter((call) => call.cmd === "gopls").length, 0);
+	assert.match(text, /templ not installed/);
 });

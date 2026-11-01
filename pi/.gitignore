@@ -4,6 +4,7 @@
 # Track configuration
 !.gitignore
 !settings.json
+!shell-gate.json
 !keybindings.json
 !models.json
 !mcp.json
