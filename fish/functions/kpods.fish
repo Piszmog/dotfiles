@@ -1,3 +1,3 @@
-function kpods -d 'Delete all jobs'
+function kpods -d 'List pods'
     kubectl get pods
 end

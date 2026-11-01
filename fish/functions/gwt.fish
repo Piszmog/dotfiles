@@ -132,8 +132,17 @@ function _gwt_add -a repo branch
     cd $path
 end
 
+function _gwt_merged -a repo branch
+    set -l upstream (git -C $repo rev-parse --symbolic-full-name "$branch@{upstream}" 2>/dev/null)
+    if test -n "$upstream"
+        git -C $repo merge-base --is-ancestor "refs/heads/$branch" $upstream 2>/dev/null
+    else
+        git -C $repo merge-base --is-ancestor "refs/heads/$branch" HEAD 2>/dev/null
+    end
+end
+
 function _gwt_delete -a repo branch force keep
-    if test "$branch" = main -o "$branch" = master
+    if test "$branch" = main; or test "$branch" = master
         echo "gwt: refusing to delete '$branch'" >&2
         return 1
     end
@@ -146,6 +155,24 @@ function _gwt_delete -a repo branch force keep
     if test "$path" = "$repo"
         echo "gwt: '$branch' is the main worktree of $repo" >&2
         return 1
+    end
+
+    # Decide about the branch before removing the worktree. Removal is
+    # irreversible, and a worktree-less unmerged branch cannot be retried.
+    set -l merged 0
+    _gwt_merged $repo $branch
+    and set merged 1
+
+    if test "$keep" != 1; and test $merged = 0
+        if test "$force" != 1
+            echo "gwt: branch '$branch' is not fully merged; use -f to delete it, or -k to keep it" >&2
+            return 1
+        end
+        _gwt_confirm "Branch '$branch' is not merged. Delete anyway"
+        or begin
+            echo 'gwt: aborted' >&2
+            return 1
+        end
     end
 
     set -l here (pwd -P)
@@ -169,23 +196,16 @@ function _gwt_delete -a repo branch force keep
     git worktree remove $flags $path
     or return 1
 
-    if test "$keep" != 1
-        if git branch -d $branch 2>/dev/null
-            echo "Deleted branch $branch"
-        else
-            if test "$force" != 1
-                echo "gwt: branch '$branch' is not fully merged; keeping it" >&2
-                return 1
-            end
-            _gwt_confirm "Branch '$branch' is not merged. Delete anyway"
-            or begin
-                echo "gwt: kept branch '$branch'" >&2
-                return 1
-            end
-            git branch -D $branch
-            or return 1
-        end
+    test "$keep" = 1; and return 0
+
+    set -l delete_flag -d
+    test $merged = 0; and set delete_flag -D
+    git -C $repo branch $delete_flag $branch
+    or begin
+        echo "gwt: could not delete branch '$branch'" >&2
+        return 1
     end
+    echo "Deleted branch $branch"
 end
 
 function gwt -d 'Create, list, and remove git worktrees'
@@ -210,6 +230,15 @@ function gwt -d 'Create, list, and remove git worktrees'
     set -q _flag_f; and set force 1
     set -l keep 0
     set -q _flag_k; and set keep 1
+
+    if set -ql _flag_l
+        if test -n "$argv[1]"
+            echo 'gwt: -l takes no branch' >&2
+            return 1
+        end
+        _gwt_list
+        return 0
+    end
 
     if set -ql _flag_d
         set -l target $argv[1]

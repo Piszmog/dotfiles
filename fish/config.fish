@@ -35,9 +35,9 @@ fish_add_path ~/.local/bin
 fish_add_path ~/.local/share/nvim/mason/bin
 
 # Env Vars
-set GOPATH ~/go
-# set set AWS_MFA_ARN <val>
-set XDG_CONFIG_HOME ~/.config
+set -gx GOPATH ~/go
+# set -gx AWS_MFA_ARN <val>
+set -gx XDG_CONFIG_HOME ~/.config
 set -x CLAUDE_CONFIG_DIR ~/.config/claude
 set -x PI_CODING_AGENT_DIR ~/.config/pi
 
@@ -50,9 +50,11 @@ if not test -L ~/.claude; and test -d ~/.config/claude
     ln -sf ~/.config/claude ~/.claude
 end
 
-set fish_greeting
+set -g fish_greeting
 
-starship init fish | source
+if type -q starship
+    starship init fish | source
+end
 
 # If using Homebrew and asdf
 # source /opt/homebrew/opt/asdf/libexec/asdf.fish
@@ -61,8 +63,8 @@ starship init fish | source
 source /Users/randell/.opam/opam-init/init.fish >/dev/null 2>/dev/null; or true
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/randell/google-cloud-sdk/path.fish.inc' ]
-    . '/Users/randell/google-cloud-sdk/path.fish.inc'
+if test -f '/Users/randell/google-cloud-sdk/path.fish.inc'
+    source '/Users/randell/google-cloud-sdk/path.fish.inc'
 end
 
 # Added by OrbStack: command-line tools and integration
