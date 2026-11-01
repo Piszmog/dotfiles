@@ -3,7 +3,8 @@
   "rules": [
     { "pattern": "*", "effect": "allow" },
 
-    { "pattern": "rm *", "effect": "ask" },
+    { "pattern": "rm *", "effect": "allow" },
+    { "pattern": "rm -*", "effect": "ask" },
     { "pattern": "rmdir *", "effect": "ask" },
 
     { "pattern": "rm /tmp/*", "effect": "allow" },
@@ -21,7 +22,6 @@
     { "pattern": "git push *", "effect": "ask" },
     { "pattern": "git clean *", "effect": "ask" },
     { "pattern": "git reset --hard*", "effect": "ask" },
-    { "pattern": "curl *", "effect": "ask" },
     { "pattern": "wget *", "effect": "ask" },
     { "pattern": "gh pr merge *", "effect": "ask" },
     { "pattern": "gh release *", "effect": "ask" },

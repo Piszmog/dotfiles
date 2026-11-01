@@ -9,7 +9,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { DEFAULT_RULES, decide, hasNoVerifyFlag, isLoopHeader, loadRules, matches, splitCommands, stripKeywords } from "../extensions/shell-gate.ts";
+import { DEFAULT_RULES, decide, decideRule, hasNoVerifyFlag, heredocOpener, isLoopHeader, loadRules, matches, normalizeSpacing, splitCommands, stripKeywords } from "../extensions/shell-gate.ts";
 
 test("splitCommands keeps quoted separators inside one command", () => {
 	assert.deepEqual(splitCommands('git commit -m "a; b"'), ['git commit -m "a; b"']);
@@ -21,6 +21,32 @@ test("splitCommands splits on &&, ||, ;, | and newlines", () => {
 	assert.deepEqual(splitCommands("a && b || c; d | e"), ["a", "b", "c", "d", "e"]);
 	assert.deepEqual(splitCommands("go test ./...\ngit status"), ["go test ./...", "git status"]);
 	assert.deepEqual(splitCommands("   "), []);
+});
+
+test("splitCommands lexes a heredoc body as data, not as quotes", () => {
+	assert.deepEqual(splitCommands("cat > /tmp/body.md <<'BODY'\nevery today's row\nBODY"), [
+		"cat > /tmp/body.md <<'BODY'",
+		"every today's row",
+		"BODY",
+	]);
+	// A command after the terminator is split as usual.
+	assert.deepEqual(splitCommands("cat <<'EOF'\nsome text\nEOF\ngit status"), [
+		"cat <<'EOF'",
+		"some text",
+		"EOF",
+		"git status",
+	]);
+	// The body of `bash <<'EOF'` is still judged, so it cannot smuggle a denied command.
+	const body = splitCommands("bash <<'EOF'\necho it's fine\nrm -rf ~\nEOF");
+	assert.deepEqual(body.slice(1), ["echo it's fine", "rm -rf ~", "EOF"]);
+	assert.equal(decide(DEFAULT_RULES, stripKeywords(body[2] ?? "")), "deny");
+});
+
+test("heredocOpener rejects the here-string form", () => {
+	assert.deepEqual(heredocOpener("cat <<'EOF'"), { delim: "EOF", stripTabs: false });
+	assert.deepEqual(heredocOpener("cat <<-EOF"), { delim: "EOF", stripTabs: true });
+	assert.equal(heredocOpener("wc -l <<< 'a b'"), undefined);
+	assert.equal(heredocOpener("ls -la"), undefined);
 });
 
 test("splitCommands joins a wrapped for/select header until its do", () => {
@@ -55,6 +81,12 @@ test("matches treats a trailing ' *' as optional arguments", () => {
 	assert.ok(matches("git status *", "git status --short"));
 	assert.ok(!matches("git status *", "git statuses"));
 	assert.ok(matches("cargo build *", "cargo build"));
+});
+
+test("matches spans newlines inside a quoted argument", () => {
+	assert.ok(matches("*", "- a line\n- another line"));
+	assert.ok(matches("git commit *", 'git commit -m "subject\n\nbody"'));
+	assert.equal(decide([{ pattern: "*", effect: "allow" }], "- a line\n- another line"), "allow");
 });
 
 test("allows resolve last for the routine case", () => {
@@ -104,6 +136,23 @@ test("anything unlisted asks", () => {
 	assert.equal(decide(DEFAULT_RULES, "gh pr create --fill"), "ask");
 	assert.equal(decide(DEFAULT_RULES, "git rebase -i HEAD~3"), "ask");
 	assert.equal(decide(DEFAULT_RULES, "git rebase origin/main"), "allow");
+});
+
+test("decideRule names the winning rule", () => {
+	assert.deepEqual(decideRule(DEFAULT_RULES, "git push origin main"), { effect: "deny", pattern: "git push * main" });
+	assert.deepEqual(decideRule(DEFAULT_RULES, "git push origin feat"), { effect: "ask", pattern: "git push *" });
+	assert.deepEqual(decideRule(DEFAULT_RULES, "rm -rf ~/x"), { effect: "ask", pattern: "rm -rf *" });
+	// Nothing matches on the built-in defaults, so the effect comes from the default.
+	assert.deepEqual(decideRule(DEFAULT_RULES, "cargo publish"), { effect: "ask", pattern: undefined });
+	assert.deepEqual(decideRule([{ pattern: "*", effect: "allow" }], "cargo publish"), { effect: "allow", pattern: "*" });
+});
+
+test("whitespace runs cannot dodge a rule", () => {
+	assert.equal(decide(DEFAULT_RULES, "git  push --force origin main"), "deny");
+	assert.equal(decide(DEFAULT_RULES, "git  push origin main"), "deny");
+	assert.equal(decide(DEFAULT_RULES, "rm  -rf ~"), "deny");
+	assert.equal(decide(DEFAULT_RULES, "rm\t-rf\t~"), "deny");
+	assert.equal(decide(DEFAULT_RULES, "git\tstatus"), "allow");
 });
 
 test("hasNoVerifyFlag finds the short form without false positives", () => {

@@ -14,6 +14,11 @@
  * Compound commands are split on `&&`, `||`, `;`, and `|` outside quotes, and every part is
  * checked. `git commit -m "a; b"` stays one command.
  *
+ * A heredoc body is split line by line and never quote-lexed, because the shell does not lex it
+ * either: `cat <<'EOF'` followed by `echo it's fine` must not leave a quote open over the rest of
+ * the script. Body lines are still judged as commands, so `bash <<'EOF'` cannot smuggle one.
+ * Line breaks inside a real quote stay in one part, so `*` matches across them (`s` flag).
+ *
  * `--no-verify` is also denied through its short form. The flag cluster is parsed rather than
  * pattern-matched, because `git log -n 5` and `git commit -m "fix -n handling"` both contain `-n`
  * without meaning it.
@@ -110,13 +115,32 @@ export const DEFAULT_RULES: Rule[] = [
 ];
 
 /** Split a command on `&&`, `||`, `;`, and `|` outside single and double quotes. */
+/** A heredoc opener on a line: `<<EOF`, `<<-'EOF'`. `<<<` is a here-string, not a heredoc. */
+export function heredocOpener(line: string): { delim: string; stripTabs: boolean } | undefined {
+	const match = /<<(?![<])(-?)\s*(['"]?)([A-Za-z_][A-Za-z0-9_]*)\2/.exec(line);
+	if (!match) return undefined;
+	return { delim: match[3] ?? "", stripTabs: match[1] === "-" };
+}
+
 export function splitCommands(command: string): string[] {
 	const parts: string[] = [];
 	let current = "";
 	let skipSpace = false;
 	let quote: '"' | "'" | undefined;
+	let heredoc: { delim: string; stripTabs: boolean } | undefined;
 	for (let index = 0; index < command.length; index += 1) {
 		const char = command[index] ?? "";
+		if (heredoc) {
+			if (char !== "\n") {
+				current += char;
+				continue;
+			}
+			const line = heredoc.stripTabs ? current.replace(/^\t+/, "") : current;
+			parts.push(line);
+			current = "";
+			if (line.trim() === heredoc.delim) heredoc = undefined;
+			continue;
+		}
 		if (skipSpace) {
 			if (char === " " || char === "\t") continue;
 			skipSpace = false;
@@ -148,6 +172,7 @@ export function splitCommands(command: string): string[] {
 				continue;
 			}
 			parts.push(current);
+			heredoc = heredocOpener(current);
 			current = "";
 			continue;
 		}
@@ -211,19 +236,42 @@ function escapeRegExp(value: string): string {
 
 /** Whole-command glob: `*` matches any run of characters. A trailing ` *` also matches bare. */
 export function matches(pattern: string, command: string): boolean {
-	const toRegExp = (source: string) => new RegExp(`^${source.split("*").map(escapeRegExp).join(".*")}$`);
+	// `s` so `*` spans newlines: a quoted multi-line argument is still one command.
+	const toRegExp = (source: string) => new RegExp(`^${source.split("*").map(escapeRegExp).join(".*")}$`, "s");
 	if (toRegExp(pattern).test(command)) return true;
 	if (pattern.endsWith(" *")) return toRegExp(pattern.slice(0, -2)).test(command);
 	return false;
 }
 
+/**
+ * Collapse whitespace runs and trim. The shell treats `rm  -rf` and `rm -rf` as the same command,
+ * so a pattern that misses the padded form would let it dodge the rule.
+ */
+export function normalizeSpacing(command: string): string {
+	return command.replace(/[ \t]+/g, " ").trim();
+}
+
 /** Last matching rule wins; a command nothing matches on asks. */
-export function decide(rules: Rule[], command: string): Effect {
+export function decideRule(rules: Rule[], command: string): { effect: Effect; pattern?: string } {
 	let effect: Effect = "ask";
+	let pattern: string | undefined;
+	const subject = normalizeSpacing(command);
 	for (const rule of rules) {
-		if (matches(rule.pattern, command)) effect = rule.effect;
+		if (matches(rule.pattern, subject)) {
+			effect = rule.effect;
+			pattern = rule.pattern;
+		}
 	}
-	return effect;
+	return { effect, pattern };
+}
+
+export function decide(rules: Rule[], command: string): Effect {
+	return decideRule(rules, command).effect;
+}
+
+/** Why a part got its effect: the winning rule, or the default when nothing matched. */
+function because(pattern: string | undefined): string {
+	return pattern === undefined ? "no rule matched, so the default is ask" : `last matching rule: \`${pattern}\``;
 }
 
 /** Whitespace split that keeps quoted arguments whole and drops the quotes. */
@@ -356,26 +404,25 @@ export default function (pi: ExtensionAPI) {
 			if (!part) continue;
 			if (isLoopHeader(raw, index)) continue;
 			if (approved.has(raw[index] ?? "") || approved.has(part)) continue;
-			const effect = decide(loaded.rules, part);
+			const { effect, pattern } = decideRule(loaded.rules, part);
 			if (effect === "allow") continue;
 			if (effect === "deny") {
 				return {
 					block: true,
-					reason: `Blocked: \`${firstLine(part)}\` is denied by shell-gate. Do not retry it another way; report the blocked command to the user.`,
+					reason: `Blocked: \`${firstLine(part)}\` is denied by shell-gate (${because(pattern)}). Do not retry it another way; report the blocked command to the user.`,
 				};
 			}
 			// effect === "ask"
 			if (!ctx.hasUI) {
 				return {
 					block: true,
-					reason: `Blocked: \`${firstLine(part)}\` needs approval and there is no UI to ask. Run it yourself, or pass --tools to drop bash.`,
+					reason: `Blocked: \`${firstLine(part)}\` needs approval and there is no UI to ask (${because(pattern)}). Run it yourself, or pass --tools to drop bash.`,
 				};
 			}
-			const choice = await ctx.ui.select(`Run this command?\n\n  ${firstLine(raw[index] ?? "", 400)}\n`, [
-				"Allow once",
-				"Allow for this session",
-				"Block",
-			]);
+			const choice = await ctx.ui.select(
+				`Run this command?\n\n  ${firstLine(raw[index] ?? "", 400)}\n\n  part ${index + 1} of ${raw.length} · ${because(pattern)}\n`,
+				["Allow once", "Allow for this session", "Block"],
+			);
 			if (choice === "Allow for this session") {
 				approved.add(part);
 				continue;
