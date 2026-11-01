@@ -93,7 +93,8 @@ block), and are blocked outright in print/RPC mode where there is no UI.
 - Commit subject: imperative mood, <72 chars, no trailing period
 - PR title matches commit subject; PR body summarizes changes and references the issue number
 - Never skip pre-commit hooks: `--no-verify` and its short form `git commit -n` are denied
-- Never squash or force-push to main/master (denied); a plain `git push` asks for approval, including inside `/ship`
+- Never squash or force-push to main/master (blocked); a push to another branch runs without
+  asking, and a push whose target cannot be pinned to one branch still asks
 - Ask before taking irreversible actions (deleting files, pushing, etc.)
 - Use `gh pr create` for pull requests
 

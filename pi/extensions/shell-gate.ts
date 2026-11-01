@@ -23,12 +23,19 @@
  * pattern-matched, because `git log -n 5` and `git commit -m "fix -n handling"` both contain `-n`
  * without meaning it.
  *
+ * A `git push` that the rules leave at `ask` is settled by its target instead of prompting: a
+ * push to a branch other than `main`/`master` runs, a push to one of those is blocked, and a push
+ * whose target cannot be pinned down (detached HEAD, `--all`, `--delete`, a remote-only argument
+ * with no branch) keeps asking. `pushVerdict` does the work; `currentBranch` supplies the branch
+ * the command was run from when the refspec does not name one.
+ *
  * Rules come from `~/.config/pi/shell-gate.json` (`{ "rules": [...] }`), appended after the
  * built-in defaults so they win. Editing that file needs `/reload`.
  *
  * Toggle at runtime: /shell-gate off | on | status
  */
 
+import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
@@ -94,7 +101,8 @@ export const DEFAULT_RULES: Rule[] = [
 	{ pattern: "git branch --delete *", effect: "ask" },
 	{ pattern: "git branch -m *", effect: "ask" },
 
-	// Broad asks that leave the specific denies below room to win.
+	// Broad asks that leave the specific denies below room to win. A push the rules leave at ask is
+	// settled by `pushVerdict` against its target branch.
 	{ pattern: "git push *", effect: "ask" },
 	{ pattern: "rm -rf *", effect: "ask" },
 
@@ -314,6 +322,103 @@ function tokenize(command: string): string[] {
  * True when a `git commit` passes `-n` (the short form of `--no-verify`) in its flag cluster.
  * Stops after a message flag so `git commit -m "fix -n handling"` is not mistaken for the flag.
  */
+/** Branch names a push must never target. Mirrors the deny rules in both rule sets. */
+const PROTECTED_BRANCHES = new Set(["main", "master"]);
+
+/** Flags that push or delete more than one ref, so no single branch can be judged. */
+const MULTI_REF_FLAGS = new Set(["--all", "--branches", "--tags", "--mirror", "--prune", "--delete", "--follow-tags"]);
+
+/** Long flags that take the next token as their value, so it is not read as a refspec. */
+const PUSH_FLAGS_WITH_VALUE = new Set(["-o", "--push-option", "--repo"]);
+
+export type PushVerdict = "allow" | "ask" | "deny";
+
+/**
+ * The branch a refspec targets: `feat`, `+feat`, `HEAD:feat`, `refs/heads/feat:feat` -> `feat`.
+ * `HEAD` is kept as-is so the caller can resolve it to the checked-out branch; `undefined` when the
+ * refspec names no single branch (a wildcard).
+ */
+function refTarget(refspec: string): { target: string; force: boolean } | undefined {
+	let text = refspec;
+	const force = text.startsWith("+");
+	if (force) text = text.slice(1);
+	const [source = "", destination] = text.split(":");
+	const target = (destination ?? source).replace(/^refs\/heads\//, "");
+	if (!target || target.includes("*")) return undefined;
+	return { target, force };
+}
+
+/**
+ * Judge a `git push` from its refspecs, or from `branch()` when it names none. `undefined` when
+ * the command is not a push, so the caller keeps whatever the rules decided.
+ *
+ * A lone positional is read as the remote (`git push origin`), not as a branch: telling the two
+ * apart needs the remote list, and pushing to a remote named like a branch is the rarer case.
+ */
+export function pushVerdict(command: string, branch: () => string | undefined): PushVerdict | undefined {
+	const tokens = tokenize(command);
+	if (tokens[0] !== "git") return undefined;
+	let at = 1;
+	while (at < tokens.length && (tokens[at] ?? "").startsWith("-")) {
+		const flag = tokens[at] ?? "";
+		at += flag === "-C" || flag === "-c" || flag === "--git-dir" || flag === "--work-tree" ? 2 : 1;
+	}
+	if (tokens[at] !== "push") return undefined;
+
+	const args = tokens.slice(at + 1);
+	const refspecs: string[] = [];
+	let multi = false;
+	for (let index = 0; index < args.length; index += 1) {
+		const arg = args[index] ?? "";
+		if (!arg.startsWith("-")) {
+			refspecs.push(arg);
+			continue;
+		}
+		if (PUSH_FLAGS_WITH_VALUE.has(arg)) {
+			index += 1;
+			continue;
+		}
+		// `--force*` and `-f` are already denied by the rules; a `+refspec` is the form they miss.
+		if (arg.startsWith("--force")) return "deny";
+		if (MULTI_REF_FLAGS.has(arg)) multi = true;
+		if (arg.startsWith("--")) continue;
+		const cluster = arg.slice(1);
+		if (cluster.includes("f")) return "deny";
+		if (cluster.includes("d")) multi = true;
+	}
+	if (multi) return "ask";
+
+	const targets = refspecs.slice(1);
+	if (targets.length === 0) {
+		const current = branch();
+		if (!current) return "ask";
+		return PROTECTED_BRANCHES.has(current) ? "deny" : "allow";
+	}
+	for (const refspec of targets) {
+		const resolved = refTarget(refspec);
+		if (!resolved) return "ask";
+		if (resolved.force) return "deny";
+		if (resolved.target === "HEAD") {
+			const current = branch();
+			if (!current) return "ask";
+			if (PROTECTED_BRANCHES.has(current)) return "deny";
+			continue;
+		}
+		if (PROTECTED_BRANCHES.has(resolved.target)) return "deny";
+	}
+	return "allow";
+}
+
+/** The checked-out branch, or `undefined` outside a repository or on a detached HEAD. */
+export function currentBranch(cwd: string | undefined): string | undefined {
+	if (!cwd) return undefined;
+	// `branch --show-current` answers on an unborn branch too, where `rev-parse --abbrev-ref HEAD` fails.
+	const result = spawnSync("git", ["branch", "--show-current"], { cwd, encoding: "utf8", timeout: 2000 });
+	if (result.status !== 0) return undefined;
+	const branch = result.stdout.trim();
+	return branch || undefined;
+}
+
 export function hasNoVerifyFlag(command: string): boolean {
 	const tokens = tokenize(command);
 	const at = tokens.indexOf("commit");
@@ -413,6 +518,16 @@ export default function (pi: ExtensionAPI) {
 				};
 			}
 			// effect === "ask"
+			// A push to a branch other than main/master runs without a prompt; the rules still deny
+			// force pushes and explicit main/master targets before this point.
+			const pushed = pushVerdict(part, () => currentBranch(ctx.cwd));
+			if (pushed === "allow") continue;
+			if (pushed === "deny") {
+				return {
+					block: true,
+					reason: `Blocked: \`${firstLine(part)}\` pushes to main/master or forces a branch, which shell-gate denies. Push a feature branch instead, or ask the user to run it.`,
+				};
+			}
 			if (!ctx.hasUI) {
 				return {
 					block: true,

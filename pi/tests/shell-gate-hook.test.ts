@@ -15,6 +15,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -24,7 +25,7 @@ type Handler = (event: { toolName: string; input: Record<string, unknown> }, ctx
 type Verdict = { block?: boolean; reason?: string } | undefined;
 
 interface Harness {
-	run(command: string, options?: { hasUI?: boolean; choice?: string; toolName?: string }): Promise<{ verdict: Verdict; prompts: string[] }>;
+	run(command: string, options?: { hasUI?: boolean; choice?: string; toolName?: string; cwd?: string }): Promise<{ verdict: Verdict; prompts: string[] }>;
 }
 
 /** The shape of the real config: allow everything, then carve out asks and denies. */
@@ -58,10 +59,11 @@ function harness(rules: readonly { pattern: string; effect: string }[] = TEST_RU
 	assert.ok(handler, "the extension must register a tool_call handler");
 
 	return {
-		async run(command, { hasUI = true, choice = "Allow once", toolName = "bash" } = {}) {
+		async run(command, { hasUI = true, choice = "Allow once", toolName = "bash", cwd } = {}) {
 			const prompts: string[] = [];
 			const ctx = {
 				hasUI,
+				cwd,
 				ui: {
 					select: async (title: string) => {
 						prompts.push(title);
@@ -84,14 +86,46 @@ test("a benign heredoc command runs with no prompt", async () => {
 	assert.deepEqual(prompts, []);
 });
 
-test("an ask prompt names the winning rule and the part it judged", async () => {
+test("a git push that names a feature branch runs with no prompt", async () => {
 	const gate = harness();
 	const { verdict, prompts } = await gate.run("git push -u origin feat");
+	assert.equal(verdict, undefined);
+	assert.deepEqual(prompts, []);
+});
+
+test("a bare git push runs when the checked-out branch is not main/master", async () => {
+	const repo = mkdtempSync(join(tmpdir(), "shell-gate-push-"));
+	execFileSync("git", ["init", "-b", "feat", repo], { stdio: "ignore" });
+	const { verdict, prompts } = await harness().run("git push", { cwd: repo });
+	assert.equal(verdict, undefined);
+	assert.deepEqual(prompts, []);
+});
+
+test("a bare git push from main is blocked without prompting", async () => {
+	const repo = mkdtempSync(join(tmpdir(), "shell-gate-push-"));
+	execFileSync("git", ["init", "-b", "main", repo], { stdio: "ignore" });
+	const { verdict, prompts } = await harness().run("git push", { cwd: repo });
+	assert.deepEqual(prompts, []);
+	assert.equal(verdict?.block, true);
+	assert.match(verdict?.reason ?? "", /pushes to main\/master/);
+});
+
+test("a push whose target cannot be determined still asks", async () => {
+	const gate = harness();
+	const { verdict, prompts } = await gate.run("git push");
+	assert.equal(verdict, undefined);
+	assert.equal(prompts.length, 1);
+	assert.match(prompts[0] ?? "", /last matching rule: `git push \*`/);
+});
+
+test("an ask prompt names the winning rule and the part it judged", async () => {
+	const gate = harness();
+	const { verdict, prompts } = await gate.run("rm -rf build");
 	assert.equal(verdict, undefined);
 	assert.equal(prompts.length, 1);
 	assert.match(prompts[0] ?? "", /Run this command\?/);
 	assert.match(prompts[0] ?? "", /part 1 of 1/);
-	assert.match(prompts[0] ?? "", /last matching rule: `git push \*`/);
+	assert.match(prompts[0] ?? "", /last matching rule: `rm \*`/);
 });
 
 test("a deny blocks without prompting", async () => {
@@ -105,7 +139,7 @@ test("a deny blocks without prompting", async () => {
 
 test("an ask with no UI blocks instead of hanging", async () => {
 	const gate = harness();
-	const { verdict, prompts } = await gate.run("git push -u origin feat", { hasUI: false });
+	const { verdict, prompts } = await gate.run("git push", { hasUI: false });
 	assert.deepEqual(prompts, []);
 	assert.equal(verdict?.block, true);
 	assert.match(verdict?.reason ?? "", /needs approval and there is no UI to ask/);
@@ -120,15 +154,15 @@ test("blocking one part blocks the whole compound command", async () => {
 
 test("a session approval suppresses the next prompt for the same part", async () => {
 	const gate = harness();
-	const first = await gate.run("git push -u origin feat", { choice: "Allow for this session" });
+	const first = await gate.run("rm -rf build", { choice: "Allow for this session" });
 	assert.equal(first.prompts.length, 1);
-	const second = await gate.run("git push -u origin feat", { choice: "Allow for this session" });
+	const second = await gate.run("rm -rf build", { choice: "Allow for this session" });
 	assert.deepEqual(second.prompts, []);
 });
 
 test("blocking a prompt reports the part and asks for a report", async () => {
 	const gate = harness();
-	const { verdict } = await gate.run("git push -u origin feat", { choice: "Block" });
+	const { verdict } = await gate.run("rm -rf build", { choice: "Block" });
 	assert.equal(verdict?.block, true);
 	assert.match(verdict?.reason ?? "", /was not approved/);
 });

@@ -9,7 +9,11 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { DEFAULT_RULES, decide, decideRule, hasNoVerifyFlag, heredocOpener, isLoopHeader, loadRules, matches, normalizeSpacing, splitCommands, stripKeywords } from "../extensions/shell-gate.ts";
+import { execFileSync } from "node:child_process";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { DEFAULT_RULES, currentBranch, decide, decideRule, hasNoVerifyFlag, heredocOpener, isLoopHeader, loadRules, matches, normalizeSpacing, pushVerdict, splitCommands, stripKeywords } from "../extensions/shell-gate.ts";
 
 test("splitCommands keeps quoted separators inside one command", () => {
 	assert.deepEqual(splitCommands('git commit -m "a; b"'), ['git commit -m "a; b"']);
@@ -170,4 +174,52 @@ test("loadRules falls back to defaults when the file is missing", () => {
 	const loaded = loadRules("/nonexistent/shell-gate.json");
 	assert.equal(loaded.source, "defaults");
 	assert.equal(loaded.rules.length, DEFAULT_RULES.length);
+});
+
+test("pushVerdict allows a push that names a branch other than main/master", () => {
+	const onFeat = () => "feat";
+	assert.equal(pushVerdict("git push -u origin feat", onFeat), "allow");
+	assert.equal(pushVerdict("git push origin HEAD:feat", onFeat), "allow");
+	assert.equal(pushVerdict("git push origin feat:refs/heads/feat", onFeat), "allow");
+	assert.equal(pushVerdict("git push origin v1.0.0", onFeat), "allow");
+});
+
+test("pushVerdict reads the checked-out branch when no refspec names one", () => {
+	assert.equal(pushVerdict("git push", () => "feat"), "allow");
+	assert.equal(pushVerdict("git push origin", () => "feat"), "allow");
+	assert.equal(pushVerdict("git push -u origin HEAD", () => "feat"), "allow");
+	assert.equal(pushVerdict("git push", () => "main"), "deny");
+	assert.equal(pushVerdict("git push origin", () => "master"), "deny");
+	assert.equal(pushVerdict("git push -u origin HEAD", () => "main"), "deny");
+});
+
+test("pushVerdict blocks a refspec that lands on main/master or forces", () => {
+	const onFeat = () => "feat";
+	assert.equal(pushVerdict("git push origin feat:main", onFeat), "deny");
+	assert.equal(pushVerdict("git push origin HEAD:master", onFeat), "deny");
+	assert.equal(pushVerdict("git push origin +feat", onFeat), "deny");
+	assert.equal(pushVerdict("git push --force-with-lease origin feat", onFeat), "deny");
+});
+
+test("pushVerdict asks when the target cannot be pinned to one branch", () => {
+	assert.equal(pushVerdict("git push", () => undefined), "ask");
+	assert.equal(pushVerdict("git push origin --all", () => "feat"), "ask");
+	assert.equal(pushVerdict("git push origin --delete feat", () => "feat"), "ask");
+	assert.equal(pushVerdict("git push origin --mirror", () => "feat"), "ask");
+	assert.equal(pushVerdict("git push -d origin feat", () => "feat"), "ask");
+	assert.equal(pushVerdict("git push origin 'refs/heads/*:refs/heads/*'", () => "feat"), "ask");
+});
+
+test("pushVerdict leaves non-push commands to the rules", () => {
+	assert.equal(pushVerdict("git status", () => "feat"), undefined);
+	assert.equal(pushVerdict("git pushish", () => "feat"), undefined);
+	assert.equal(pushVerdict("npm publish", () => "feat"), undefined);
+});
+
+test("currentBranch reads the branch, and nothing outside a repository", () => {
+	const repo = mkdtempSync(join(tmpdir(), "shell-gate-branch-"));
+	execFileSync("git", ["init", "-b", "feat", repo], { stdio: "ignore" });
+	assert.equal(currentBranch(repo), "feat");
+	assert.equal(currentBranch(undefined), undefined);
+	assert.equal(currentBranch(mkdtempSync(join(tmpdir(), "shell-gate-norepo-"))), undefined);
 });
