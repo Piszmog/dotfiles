@@ -1,6 +1,11 @@
 {
   "servers": [
     {
+      "extensions": ["go"],
+      "command": ["gopls"],
+      "rootDir": "."
+    },
+    {
       "extensions": ["rs"],
       "command": ["rust-analyzer"],
       "rootDir": "."

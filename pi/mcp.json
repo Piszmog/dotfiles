@@ -1,21 +1,5 @@
 {
   "mcpServers": {
-    "gopls": {
-      "command": "gopls",
-      "args": [
-        "mcp"
-      ],
-      "description": "Go language server: definitions, references, symbols, diagnostics, and call hierarchy for the current workspace.",
-      "exposure": "deferred",
-      "toolExposure": {
-        "go_search": "direct",
-        "go_symbol_references": "direct",
-        "go_file_context": "direct",
-        "go_diagnostics": "direct",
-        "*": "deferred"
-      },
-      "timeout": 120
-    },
     "cclsp": {
       "command": "npx",
       "args": [
@@ -25,7 +9,7 @@
       "env": {
         "CCLSP_CONFIG_PATH": "${HOME}/.config/pi/cclsp.json"
       },
-      "description": "LSP navigation for Rust, Python, TypeScript, templ, SQL, HTML, Tailwind, and Nix: definitions, references, hover, workspace symbols, implementations, call hierarchy, rename, and diagnostics. Go is handled by gopls.",
+      "description": "LSP navigation for Go, Rust, Python, TypeScript, templ, SQL, HTML, Tailwind, and Nix: definitions, references, hover, workspace symbols, implementations, call hierarchy, rename, and diagnostics.",
       "exposure": "deferred",
       "toolExposure": {
         "find_definition": "direct",
@@ -34,6 +18,19 @@
         "restart_server": "hidden",
         "*": "deferred"
       },
+      "timeout": 120
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@0.0.84",
+        "--headless",
+        "--viewport-size",
+        "1280x720"
+      ],
+      "description": "Browser automation over Chrome: navigate, click, type, snapshot the accessibility tree, take screenshots, and read console or network traffic.",
+      "exposure": "deferred",
       "timeout": 120
     }
   }

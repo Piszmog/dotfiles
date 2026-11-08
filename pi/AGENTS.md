@@ -106,18 +106,16 @@ hover, call chains, and document symbols — do not fall back to grep for tasks 
 handles. If LSP errors or the file type has no server, fall back to grep without
 retrying.
 
-- Go: four `gopls` MCP tools are declared directly — `go_search`,
-  `go_symbol_references`, `go_file_context`, `go_diagnostics`. Use them instead of
-  grep when navigating Go code. `go_package_api`, `go_workspace`,
-  `go_rename_symbol`, and `go_vulncheck` exist but are deferred: load them with
-  `tool_search` before calling.
-- Rust, Python, TypeScript, templ, SQL, HTML, and Tailwind: three `cclsp` MCP tools
-  are declared directly — `find_definition`, `find_references`, `get_diagnostics`.
-  `get_hover`, `find_workspace_symbols`, `find_implementation`,
-  `prepare_call_hierarchy`, `get_incoming_calls`, `get_outgoing_calls`,
-  `rename_symbol`, and `rename_symbol_strict` are deferred: load them with
-  `tool_search` first.
-- Nix: `nixd` is configured through `cclsp`; use the same cclsp tools.
+- `cclsp` serves every language: Go (`gopls`), Rust, Python, TypeScript, templ,
+  SQL, HTML, Tailwind, and Nix. Three tools are declared directly —
+  `find_definition`, `find_references`, `get_diagnostics`. `get_hover`,
+  `find_workspace_symbols`, `find_implementation`, `prepare_call_hierarchy`,
+  `get_incoming_calls`, `get_outgoing_calls`, `rename_symbol`, and
+  `rename_symbol_strict` are deferred: load them with `tool_search` first.
+- Go: `cclsp` starts `gopls` at session start when it finds a `.go` file within three
+  levels of the working directory, ignoring `node_modules`, `target`, and `.git`;
+  otherwise on the first query of a `.go` file. Use `go doc` for signatures and
+  `govulncheck ./...` for dependency vulnerabilities.
 
 ## Development Workflow
 
@@ -129,10 +127,9 @@ retrying.
 - Plan mode for any change touching >3 files
 - `/review-team` is opt-in, not automatic — reserve it for high-stakes branches
 - Use `/ship` for the full rebase → test → lint → commit → push → PR pipeline
-- In Go workspaces, follow the `go` skill: `go doc` for signatures, targeted `go test`. Post-edit formatting and compile errors come from the `lang-check` extension, so use `go_diagnostics` for files you did not just edit or for workspace-wide analysis
+- In Go workspaces, follow the `go` skill: `go doc` for signatures, targeted `go test`. Post-edit formatting and compile errors come from the `lang-check` extension, so use `get_diagnostics` for files you did not just edit or for workspace-wide analysis
 - In Rust workspaces, follow the `rust` skill: read `Cargo.toml` `[lints]`, `clippy.toml`, and `rust-toolchain.toml` before editing; prefer `cargo check --all-targets` over `cargo build` while iterating
 - `lang-check` covers Go, Rust, and templ. Go runs `goimports` + `gopls check`, Rust runs `rustfmt` + `cargo check --all-targets`, templ runs `templ generate -f` then `gopls check` on the generated `_templ.go` (positions there are reported with a `(near file.templ:N)` hint, which is approximate — templ emits no `//line` directives). For TypeScript, Python, SQL, HTML, and Nix there is no post-edit check — run the project's own linter (or `get_diagnostics` from `cclsp`) when a change matters
-- MCP language tools are gated per workspace by `lang-gate`: `gopls` tools exist only in Go workspaces, `cclsp` tools only where the repo layout suggests a server (a manifest marker or `.templ` files). If a language tool is unexpectedly missing, check `/lang-gate status` before concluding the server is down. The gate decides opt-out once per server, so **each MCP server must keep at least one `direct` tool** in `mcp.json`; a server declared entirely `deferred` is recorded as a user opt-out and the gate silently stops gating it
 - Worktrees: Pi resolves project trust from the working directory and its parents, so keep worktrees under one directory (e.g. `~/Documents/dev/.worktrees/`) and trust that parent once instead of re-approving each worktree
 
 ## Session Management
@@ -140,4 +137,4 @@ retrying.
 - Use `/new` between unrelated tasks to reset context
 - Use `/issue <N>` to start any feature work — never describe the issue manually
 - Run `/reload` after changing Pi config, skills, or templates
-- After changing `lang-check`, `lang-gate`, or `shell-gate`, run `node --test 'tests/*.test.ts'`, then `/reload` so Pi picks up the new extension code. `shell-gate.json` edits also need `/reload`
+- After changing `lang-check` or `shell-gate`, run `node --test 'tests/*.test.ts'`, then `/reload` so Pi picks up the new extension code. `shell-gate.json` edits also need `/reload`
