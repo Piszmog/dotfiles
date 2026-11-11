@@ -135,6 +135,7 @@ retrying.
 ## Session Management
 
 - Use `/new` between unrelated tasks to reset context
+- Never background a long-running process with `&`. Long-lived servers belong in another Ghostty tab, started by the user. To test against a server, run it in the foreground with the `bash` tool's `timeout` argument and let the deadline stop it. Every shell a session starts is killed when that session ends (`session_shutdown` and `process.on("exit")`). Processes started outside the session, such as launchd, systemd, or Docker, are outside that scope
 - Use `/issue <N>` to start any feature work — never describe the issue manually
 - Run `/reload` after changing Pi config, skills, or templates
-- After changing `lang-check` or `shell-gate`, run `node --test 'tests/*.test.ts'`, then `/reload` so Pi picks up the new extension code. `shell-gate.json` edits also need `/reload`
+- After changing `lang-check`, `shell-gate`, or `shell-reaper`, run `node --test 'tests/*.test.ts'`, then `/reload` so Pi picks up the new extension code. `shell-gate.json` and `settings.json` edits also need `/reload`

@@ -1,6 +1,6 @@
 {
   "$schema": "https://pi.dev/schemas/settings.schema.json",
-  "lastChangelogVersion": "1.5.0",
+  "lastChangelogVersion": "1.5.2",
   "defaultProvider": "opencode-go",
   "defaultModel": "deepseek-v4.1-flash",
   "packages": [
@@ -14,6 +14,7 @@
     "+ls",
     "+tool_search"
   ],
+  "shellCommandPrefix": "printf '%s\\n' \"$$\" >> \"${TMPDIR:-/tmp}/pi-shells-$PPID.log\" 2>/dev/null || true",
   "quietStartup": true,
   "showCacheMissNotices": true,
   "enableInstallTelemetry": false,
