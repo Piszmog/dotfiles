@@ -60,6 +60,8 @@
           pkgs.sqlite
           pkgs.sqlitebrowser
           pkgs.starship
+          pkgs.tailwindcss_4
+          pkgs.tea
           #pkgs.tmux
           pkgs.tree
           pkgs.tree-sitter
@@ -77,7 +79,9 @@
           "piszmog/tools"
         ];
         brews = [
+          "age"
           "cliclick"
+          "esphome"
           "golangci-lint"
           "nim"
           "odin"
@@ -90,6 +94,7 @@
           "zig"
         ];
         casks = [
+          "anomalyco/tap/hex"
           #"docker"
           "firefox"
           "ghostty"
@@ -129,7 +134,7 @@
       system.defaults = {
         dock.autohide = true;
         dock.persistent-apps = [
-          "/Applications/Zen.app"
+          "/Applications/Brave Browser.app"
           "/Applications/Ghostty.app"
         ];
         finder.FXPreferredViewStyle = "clmv";

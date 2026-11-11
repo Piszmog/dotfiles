@@ -4,6 +4,7 @@ complete -c gwt -s l -l list -d 'List worktrees'
 complete -c gwt -s d -l delete -d 'Remove the worktree and the branch'
 complete -c gwt -s f -l force -d 'Allow destructive removal, asks first'
 complete -c gwt -s k -l keep-branch -d 'Keep the branch when removing the worktree'
+complete -c gwt -s P -l print-path -d 'Print the worktree path without changing directory'
 
 # Branches with a linked worktree. The main worktree is listed first by git and
 # is never removable, so its branch is skipped.

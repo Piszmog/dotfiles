@@ -18,6 +18,10 @@ function _gwt_usage
         '  -f, --force          allow removing a worktree with local changes, and' \
         '                       allow deleting an unmerged branch; each asks first' \
         '  -k, --keep-branch    keep the branch when removing the worktree' \
+        '  -P, --print-path     print the worktree path for <branch> and exit;' \
+        '                       creates nothing and does not change directory.' \
+        '                       Prints the existing path when the branch already' \
+        '                       has a worktree' \
         '' \
         'Location:' \
         '  $GWT_ROOT, or ~/Documents/dev/.worktrees/<repo>/<branch-dir>' \
@@ -50,6 +54,18 @@ function _gwt_repo
     else
         echo $common
     end
+end
+
+# Location used for every worktree: <root>/<repo-basename>/<branch with / -> ->.
+# -P prints this without side effects, so the formula must live in one place.
+function _gwt_root
+    set -l root $GWT_ROOT
+    test -z "$root"; and set root ~/Documents/dev/.worktrees
+    echo $root
+end
+
+function _gwt_path -a repo branch
+    echo (_gwt_root)/(path basename $repo)/(string replace -a -- / - $branch)
 end
 
 function _gwt_worktree_path -a branch
@@ -96,9 +112,7 @@ function _gwt_add -a repo branch
         return 1
     end
 
-    set -l root $GWT_ROOT
-    test -z "$root"; and set root ~/Documents/dev/.worktrees
-    set -l path $root/(path basename $repo)/(string replace -a / - $branch)
+    set -l path (_gwt_path $repo $branch)
 
     if test -e "$path"
         echo "gwt: $path already exists" >&2
@@ -209,9 +223,9 @@ function _gwt_delete -a repo branch force keep
 end
 
 function gwt -d 'Create, list, and remove git worktrees'
-    argparse 'h/help' 'd/delete' 'l/list' 'f/force' 'k/keep-branch' -- $argv
+    argparse 'h/help' 'd/delete' 'l/list' 'f/force' 'k/keep-branch' 'P/print-path' -- $argv
     or begin
-        echo 'Usage: gwt [-h] [-l] [-d <branch>] [-f] [-k]' >&2
+        echo 'Usage: gwt [-h] [-l] [-d <branch>] [-P <branch>] [-f] [-k]' >&2
         return 1
     end
 
@@ -231,6 +245,26 @@ function gwt -d 'Create, list, and remove git worktrees'
     set -l keep 0
     set -q _flag_k; and set keep 1
 
+    if set -ql _flag_P
+        if set -ql _flag_d; or set -ql _flag_l
+            echo 'gwt: -P cannot be combined with -d or -l' >&2
+            return 1
+        end
+        set -l target $argv[1]
+        if test -z "$target"
+            echo 'gwt: -P needs a branch' >&2
+            echo 'Usage: gwt [-h] [-l] [-d <branch>] [-P <branch>] [-f] [-k]' >&2
+            return 1
+        end
+        set -l existing (_gwt_worktree_path $target)
+        if test -n "$existing"
+            echo $existing
+        else
+            _gwt_path $repo $target
+        end
+        return 0
+    end
+
     if set -ql _flag_l
         if test -n "$argv[1]"
             echo 'gwt: -l takes no branch' >&2
@@ -244,7 +278,7 @@ function gwt -d 'Create, list, and remove git worktrees'
         set -l target $argv[1]
         if test -z "$target"
             echo 'gwt: -d needs a branch' >&2
-            echo 'Usage: gwt [-h] [-l] [-d <branch>] [-f] [-k]' >&2
+            echo 'Usage: gwt [-h] [-l] [-d <branch>] [-P <branch>] [-f] [-k]' >&2
             return 1
         end
         _gwt_delete $repo $target $force $keep
