@@ -91,7 +91,6 @@
             "anomalyco/tap/hex"
             "firefox"
             "orbstack"
-            "orion"
             "pallotron-yubiswitch"
             "scroll-reverser"
             "via"
