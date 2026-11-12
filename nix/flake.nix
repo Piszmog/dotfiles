@@ -47,7 +47,6 @@
           pkgs.jq
           pkgs.just
           pkgs.k6
-          #pkgs.lazydocker
           pkgs.lazygit
           pkgs.libwebp
           pkgs.neovim
@@ -90,7 +89,6 @@
           ];
           casks = [
             "anomalyco/tap/hex"
-            #"docker"
             "firefox"
             "orbstack"
             "orion"
@@ -110,7 +108,7 @@
           dock.autohide = true;
           dock.persistent-apps = [
             "/Applications/Brave Browser.app"
-            "/Applications/Ghostty.app"
+            "/Applications/Nix Apps/Ghostty.app"
           ];
           finder.FXPreferredViewStyle = "clmv";
           loginwindow.GuestEnabled = false;
@@ -122,6 +120,9 @@
 
         # Necessary for using flakes on this system.
         nix.settings.experimental-features = "nix-command flakes";
+
+        # Allow the primary user to override daemon settings without sudo.
+        nix.settings.trusted-users = [ "randell" ];
 
         # Keep the switch clonable from a git worktree without warnings.
         nix.settings.warn-dirty = false;
@@ -158,15 +159,15 @@
               enable = true;
               enableRosetta = true;
               user = "randell";
-              autoMigrate = true;
+              trust.taps = [
+                "piszmog/tools"
+                "anomalyco/tap"
+              ];
             };
           }
         ];
       };
 
       formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt;
-
-      # Expose the package set, including overlays, for convenience.
-      darwinPackages = self.darwinConfigurations."pro".pkgs;
     };
 }

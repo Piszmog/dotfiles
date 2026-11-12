@@ -44,3 +44,4 @@ gcloud/
 zed
 .secrets/
 tmp/
+homebrew/trust.json.lock

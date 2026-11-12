@@ -1,0 +1,6 @@
+{
+  "trustedtaps": [
+    "anomalyco/tap",
+    "piszmog/tools"
+  ]
+}
