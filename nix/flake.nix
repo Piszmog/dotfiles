@@ -14,28 +14,35 @@
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, ... }:
-  let
-    configuration = { pkgs, config, ... }: {
-      nixpkgs.config.allowUnfree = true;
+  outputs =
+    inputs@{
+      self,
+      nix-darwin,
+      nixpkgs,
+      nix-homebrew,
+      ...
+    }:
+    let
+      configuration = { pkgs, ... }: {
+        nixpkgs.config.allowUnfree = true;
 
-      # List packages installed in system profile. To search by name, run:
-      # $ nix-env -qaP | grep wget
-      environment.systemPackages =
-        [ 
+        # List packages installed in system profile. To search by name, run:
+        # $ nix-env -qaP | grep wget
+        environment.systemPackages = [
           #pkgs._1password-gui # broken right now
+          pkgs.age
           pkgs.alacritty
           pkgs.colima
           pkgs.delve
           pkgs.discord
+          pkgs.esphome
           pkgs.fd
           pkgs.ffmpeg
-          pkgs.fish
           pkgs.gh
-          #pkgs.ghostty
+          pkgs.ghostty-bin
           pkgs.go
           pkgs.go-migrate
-          #pkgs.golangci-lint
+          pkgs.golangci-lint
           pkgs.goreleaser
           pkgs.jq
           pkgs.just
@@ -43,12 +50,11 @@
           #pkgs.lazydocker
           pkgs.lazygit
           pkgs.libwebp
-          pkgs.monaspace
-          pkgs.mkalias
           pkgs.neovim
-          pkgs.nph
           pkgs.nodejs_24
+          pkgs.nph
           #pkgs.obsidian
+          pkgs.odin
           #pkgs.ollama
           pkgs.pnpm
           pkgs.python313
@@ -68,120 +74,99 @@
           pkgs.turso-cli
           pkgs.uv
           pkgs.wget
-          #pkgs.zig
+          pkgs.zig
         ];
 
-      homebrew = {
-        enable = true;
-        taps = [
-          "homebrew/core"
-          "homebrew/cask"
-          "piszmog/tools"
-        ];
-        brews = [
-          "age"
-          "cliclick"
-          "esphome"
-          "golangci-lint"
-          "nim"
-          "odin"
-          "piszmog/tools/gtpm"
-          "piszmog/tools/lopper"
-          "sdl3"
-          "sdl3_ttf"
-          "sdl3_image"
-          "sdl3_mixer"
-          "zig"
-        ];
-        casks = [
-          "anomalyco/tap/hex"
-          #"docker"
-          "firefox"
-          "ghostty"
-          "orbstack"
-          "orion"
-          "pallotron-yubiswitch"
-          "scroll-reverser"
-          "via"
-        ];
-        onActivation.cleanup = "zap";
-        onActivation.autoUpdate = true;
-        onActivation.upgrade = true;
-        onActivation.extraFlags = [ "--force-cleanup" ];
-      };
+        fonts.packages = [ pkgs.monaspace ];
 
-      system.primaryUser = "randell";
-      system.activationScripts.applications.text = let
-        env = pkgs.buildEnv {
-          name = "system-applications";
-          paths = config.environment.systemPackages;
-          pathsToLink = ["/Applications"];
+        homebrew = {
+          enable = true;
+          taps = [ "piszmog/tools" ];
+          brews = [
+            "cliclick"
+            "nim"
+            "piszmog/tools/gtpm"
+            "piszmog/tools/lopper"
+          ];
+          casks = [
+            "anomalyco/tap/hex"
+            #"docker"
+            "firefox"
+            "orbstack"
+            "orion"
+            "pallotron-yubiswitch"
+            "scroll-reverser"
+            "via"
+          ];
+          greedyCasks = true;
+          onActivation.cleanup = "zap";
+          onActivation.autoUpdate = true;
+          onActivation.upgrade = true;
         };
-      in
-        pkgs.lib.mkForce ''
-        # Set up applications.
-        echo "setting up /Applications..." >&2
-        rm -rf /Applications/Nix\ Apps
-        mkdir -p /Applications/Nix\ Apps
-        find ${env}/Applications -maxdepth 1 -type l -exec readlink '{}' + |
-        while read -r src; do
-          app_name=$(basename "$src")
-          echo "copying $src" >&2
-          ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
-        done
-      '';
 
-      system.defaults = {
-        dock.autohide = true;
-        dock.persistent-apps = [
-          "/Applications/Brave Browser.app"
-          "/Applications/Ghostty.app"
+        system.primaryUser = "randell";
+
+        system.defaults = {
+          dock.autohide = true;
+          dock.persistent-apps = [
+            "/Applications/Brave Browser.app"
+            "/Applications/Ghostty.app"
+          ];
+          finder.FXPreferredViewStyle = "clmv";
+          loginwindow.GuestEnabled = false;
+          NSGlobalDomain.AppleICUForce24HourTime = true;
+          NSGlobalDomain.AppleInterfaceStyle = "Dark";
+        };
+
+        # nix.package = pkgs.nix;
+
+        # Necessary for using flakes on this system.
+        nix.settings.experimental-features = "nix-command flakes";
+
+        # Keep the switch clonable from a git worktree without warnings.
+        nix.settings.warn-dirty = false;
+
+        # Store maintenance.
+        nix.gc.automatic = true;
+        nix.gc.options = "--delete-older-than 30d";
+        nix.optimise.automatic = true;
+
+        # Create /etc/zshrc that loads the nix-darwin environment.
+        #programs.zsh.enable = true;  # default shell on catalina
+        programs.fish.enable = true;
+
+        # Set Git commit hash for darwin-version.
+        system.configurationRevision = self.rev or self.dirtyRev or null;
+
+        # Used for backwards compatibility, please read the changelog before changing.
+        # $ darwin-rebuild changelog
+        system.stateVersion = 7;
+
+        # The platform the configuration will be used on.
+        nixpkgs.hostPlatform = "aarch64-darwin";
+      };
+    in
+    {
+      # Build darwin flake using:
+      # $ darwin-rebuild build --flake .#pro
+      darwinConfigurations."pro" = nix-darwin.lib.darwinSystem {
+        modules = [
+          configuration
+          nix-homebrew.darwinModules.nix-homebrew
+          {
+            nix-homebrew = {
+              enable = true;
+              enableRosetta = true;
+              user = "randell";
+              autoMigrate = true;
+            };
+          }
         ];
-        finder.FXPreferredViewStyle = "clmv";
-        loginwindow.GuestEnabled = false;
-        NSGlobalDomain.AppleICUForce24HourTime = true;
-        NSGlobalDomain.AppleInterfaceStyle = "Dark";
       };
 
-      # nix.package = pkgs.nix;
+      formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt;
 
-      # Necessary for using flakes on this system.
-      nix.settings.experimental-features = "nix-command flakes";
-
-      # Create /etc/zshrc that loads the nix-darwin environment.
-      #programs.zsh.enable = true;  # default shell on catalina
-      programs.fish.enable = true;
-
-      # Set Git commit hash for darwin-version.
-      system.configurationRevision = self.rev or self.dirtyRev or null;
-
-      # Used for backwards compatibility, please read the changelog before changing.
-      # $ darwin-rebuild changelog
-      system.stateVersion = 5;
-
-      # The platform the configuration will be used on.
-      nixpkgs.hostPlatform = "aarch64-darwin";
+      # Expose the package set, including overlays, for convenience.
+      darwinPackages = self.darwinConfigurations."pro".pkgs;
     };
-  in
-  {
-    # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#pro
-    darwinConfigurations."pro" = nix-darwin.lib.darwinSystem {
-      modules = [
-        configuration
-        nix-homebrew.darwinModules.nix-homebrew
-        {
-          nix-homebrew = {
-            enable = true;
-            enableRosetta = true;
-            user = "randell";
-            autoMigrate = true;
-          };
-        }
-      ];
-    };
-
-    # Expose the package set, including overlays, for convenience.
-    darwinPackages = self.darwinConfigurations."pro".pkgs;
-  };
 }
