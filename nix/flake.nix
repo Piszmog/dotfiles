@@ -23,6 +23,8 @@
       ...
     }:
     let
+      username = "randell";
+
       configuration = { pkgs, ... }: {
         nixpkgs.config.allowUnfree = true;
 
@@ -80,7 +82,6 @@
 
         homebrew = {
           enable = true;
-          taps = [ "piszmog/tools" ];
           brews = [
             "cliclick"
             "nim"
@@ -95,13 +96,13 @@
             "scroll-reverser"
             "via"
           ];
-          greedyCasks = true;
-          onActivation.cleanup = "zap";
+          greedyCasks = false;
+          onActivation.cleanup = "uninstall";
           onActivation.autoUpdate = true;
           onActivation.upgrade = true;
         };
 
-        system.primaryUser = "randell";
+        system.primaryUser = username;
 
         system.defaults = {
           dock.autohide = true;
@@ -121,7 +122,7 @@
         nix.settings.experimental-features = "nix-command flakes";
 
         # Allow the primary user to override daemon settings without sudo.
-        nix.settings.trusted-users = [ "randell" ];
+        nix.settings.trusted-users = [ username ];
 
         # Keep the switch clonable from a git worktree without warnings.
         nix.settings.warn-dirty = false;
@@ -157,11 +158,7 @@
             nix-homebrew = {
               enable = true;
               enableRosetta = true;
-              user = "randell";
-              trust.taps = [
-                "piszmog/tools"
-                "anomalyco/tap"
-              ];
+              user = username;
             };
           }
         ];
