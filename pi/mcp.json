@@ -20,18 +20,11 @@
       },
       "timeout": 120
     },
-    "playwright": {
-      "command": "npx",
+    "browse": {
+      "command": "~/.local/bin/browse",
       "args": [
-        "-y",
-        "@playwright/mcp@0.0.84",
-        "--headless",
-        "--viewport-size",
-        "1280x720"
-      ],
-      "description": "Browser automation over Chrome: navigate, click, type, snapshot the accessibility tree, take screenshots, and read console or network traffic.",
-      "exposure": "deferred",
-      "timeout": 120
+        "mcp"
+      ]
     }
   }
 }

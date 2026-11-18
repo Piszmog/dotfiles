@@ -83,6 +83,7 @@
         homebrew = {
           enable = true;
           brews = [
+            "bend"
             "cliclick"
             "nim"
             "piszmog/tools/gtpm"

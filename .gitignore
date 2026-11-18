@@ -42,6 +42,7 @@ fish/fish_variables
 nvim/lazy-lock.json
 gcloud/
 zed
+browse/settings.json
 .secrets/
 tmp/
 homebrew/trust.json.lock
